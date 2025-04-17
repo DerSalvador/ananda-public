@@ -12,6 +12,8 @@ from utils import get_logger
 from concurrent.futures import ThreadPoolExecutor
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
+
+from fastapi_utilities import repeat_every
 import uvicorn
 from datetime import datetime
 
@@ -136,7 +138,9 @@ def _update_sentiment(symbol: str, updateRequest: BiasResponse):
     update_sentiment(symbol, updateRequest.bias)
     return {"status": "success", "message": "Sentiment updated"}
 
-@app.get("/update_profit")
+@app.on_event("startup")
+@repeat_every(seconds=5)
+# @app.get("/update_profit")
 def _cron_update_profit():
     return cron_update_profit()
 

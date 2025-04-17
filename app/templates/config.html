@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bias Config</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         async function toggleBias(biasName, checkbox) {
             const active = checkbox.checked;
@@ -75,7 +76,7 @@
                         row1.innerHTML = `
                             <span class="flex items-center text-gray-700">${method}${usedSymbolIcon}</span>
                             <span class="capitalize text-${details.bias === 'long' ? 'green' : details.bias === 'short' ? 'red' : 'gray'}-600">${details.bias}</span>
-                        `; 
+                        `;
 
                         const row2 = document.createElement('div');
                         row2.className = 'text-xs text-gray-600 mt-1';
@@ -86,10 +87,83 @@
                         card.appendChild(methodContainer);
                     });
 
+                    const chartContainer = document.createElement('div');
+                    chartContainer.className = 'mt-4';
+                    card.appendChild(chartContainer);
                     container.appendChild(card);
+
+                    showProfitChart(symbol, chartContainer);
                 }
             } catch (err) {
                 console.error('Failed to fetch sentiment data:', err);
+            }
+        }
+
+        async function showProfitChart(symbol, container) {
+            try {
+                const response = await fetch(`/profit/${symbol}`);
+                const data = await response.json();
+
+                const profits = data.map(item => item.profit);
+                const timestamps = data.map(item =>
+                    new Date(item.timestamp * 1000).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    })
+                );
+                const isShorts = data.map(item => item.is_short);
+
+                // Remove old canvas if exists
+                const oldCanvas = container.querySelector('canvas');
+                if (oldCanvas) oldCanvas.remove();
+
+                const canvas = document.createElement('canvas');
+                container.appendChild(canvas);
+
+                new Chart(canvas.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: timestamps,
+                        datasets: [{
+                            label: `${symbol} Profit`,
+                            data: profits,
+                            borderColor: isShorts[0] ? 'red' : 'green',
+                            backgroundColor: 'rgba(0,0,0,0.05)',
+                            tension: 0.3,
+                            fill: true,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: `Profit History (${isShorts[0] ? 'Short' : 'Long'})`
+                            },
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Profit'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Time'
+                                }
+                            }
+                        }
+                    }
+                });
+            } catch (err) {
+                alert('Failed to fetch profit data for ' + symbol);
+                console.error(err);
             }
         }
     </script>
@@ -128,7 +202,7 @@
     <!-- Sentiment Analysis -->
     <div id="sentiment-container" class="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-4xl mx-auto mt-6 mb-8">
         <h1 class="text-xl sm:text-2xl font-bold mb-4">Current Sentiment</h1>
-        <div id="sentiment-list" class="space-y-4">
+        <div id="sentiment-list" class="space-y-6">
             <!-- Content populated by JS -->
         </div>
     </div>
