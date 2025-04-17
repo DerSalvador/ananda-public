@@ -20,16 +20,6 @@ def update_sentiment(symbol: str, sentiment: str):
         real_sentiments[symbol] = TimeBasedDeque(60*60*2)
     real_sentiments[symbol].add(sentiment)
 
-def update_profit(symbol: str, profit: float, is_short: bool = False):
-    if symbol not in profits:
-        profits[symbol] = TimeBasedDeque(60*60*2)
-    profits[symbol].add({"profit": profit, "is_short": is_short})
-
-def get_profits(symbol: str):
-    if symbol not in profits:
-        return []
-    return profits[symbol].get_items()
-
 def current_position(symbol: str):
     if symbol not in profits:
         return BiasType.NEUTRAL

@@ -1,7 +1,8 @@
 from dotenv import load_dotenv
+from reversetrend import cron_update_profit, get_profits
 load_dotenv()
 
-from db import current_position, get_profits, should_reverse, update_profit, update_sentiment
+from db import current_position, should_reverse, update_sentiment
 from bias import get_all_configs, get_biases, get_config, getInterfaces, update_bias, update_config
 from pydantic import BaseModel
 from bias.interface import BiasRequest, BiasResponse, BiasType
@@ -119,14 +120,6 @@ def _update_config(data: UpdateConfigRequest):
     update_config(data.name, data.value)
     return {"status": "success", "message": "Config updated"}
 
-class AddProfitRequest(BaseModel):
-    symbol: str
-    profit: float
-    is_short: bool = False
-@app.post("/profit")
-def _update_profit(addProfitRequest: AddProfitRequest):
-    update_profit(addProfitRequest.symbol, addProfitRequest.profit, addProfitRequest.is_short)
-
 @app.get("/profit/{symbol}")
 def _get_profit(symbol: str):
     profits = get_profits(symbol)
@@ -142,6 +135,10 @@ def _update_sentiment(symbol: str, updateRequest: BiasResponse):
     logger.info(f"Updating sentiment for {symbol} to {updateRequest.bias}")
     update_sentiment(symbol, updateRequest.bias)
     return {"status": "success", "message": "Sentiment updated"}
+
+@app.get("/update_profit")
+def _cron_update_profit():
+    return cron_update_profit()
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=9000, reload=True)
