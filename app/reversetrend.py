@@ -2,6 +2,7 @@ import json
 import os
 import requests
 
+from bias import get_config
 from utils import TimeBasedDeque, get_logger
 
 
@@ -40,7 +41,8 @@ def cron_update_profit():
 def get_profits(symbol: str):
     if symbol not in profit_queue:
         return []
-    items_and_times = profit_queue[symbol].get_items_and_times()
+    config_seconds = int(get_config("ReverseTrendCheckBackSeconds", 60*10))
+    items_and_times = profit_queue[symbol].get_items_and_times_last_x_seconds(config_seconds)
     for i in range(len(items_and_times)):
         items_and_times[i] = {
             "timestamp": items_and_times[i][0],

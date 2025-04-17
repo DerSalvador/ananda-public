@@ -55,6 +55,11 @@ class TimeBasedDeque:
         """Retrieve all items with their timestamps."""
         return [(t, item) for t, item in self.queue]
 
+    def get_items_and_times_last_x_seconds(self, seconds):
+        """Retrieve items with their timestamps from the last X seconds."""
+        threshold = time() - (seconds)
+        return [(t, item) for t, item in self.queue if t >= threshold]
+
     def get_items_last_x_seconds(self, seconds):
         """Retrieve items from the last X seconds."""
         threshold = time() - (seconds)
