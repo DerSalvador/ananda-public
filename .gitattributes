@@ -1,0 +1,3 @@
+NishamJupytherNotebook.ipynb filter=git-crypt diff=git-crypt
+AnandaStrategy* filter=git-crypt diff=git-crypt
+utils/** filter=git-crypt diff=git-crypt
