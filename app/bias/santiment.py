@@ -13,6 +13,7 @@ logger = get_logger()
 
 class SantimentBias(BiasInterface):
     paid = True
+
     def __init__(self):
         self.api_key = os.getenv("SANTIMENT_API_KEY", "")
         self.metric = "sentiment_weighted_total_1d_v2"
@@ -35,8 +36,8 @@ class SantimentBias(BiasInterface):
             "Authorization": f"Apikey {self.api_key}",
         }
 
-        SantimentFromTimeDaysAgo = int(get_config("SantimentFromTimeDaysAgo", 36))
-        SantimentToTimeDaysAgo = int(get_config("SantimentToTimeDaysAgo", 30))
+        SantimentFromTimeDaysAgo = int(get_config("SantimentFromTimeDaysAgo", 7))
+        SantimentToTimeDaysAgo = int(get_config("SantimentToTimeDaysAgo", 0))
         from_time = self.iso_date(SantimentFromTimeDaysAgo)
         to_time = self.iso_date(SantimentToTimeDaysAgo)
 
@@ -66,22 +67,21 @@ class SantimentBias(BiasInterface):
             )
             response.raise_for_status()
             data = response.json()
-            logger.info(data)
+            logger.debug(data)
 
             points = data["data"]["getMetric"]["timeseriesData"]
             values = [point["value"] for point in points if point["value"] is not None]
 
             logger.info(f"Fetched {len(values)} sentiment values")
-            return values[-6:]  # 5 for average, 1 for latest
+            return values[-6:]  # Last 6: previous 5 + latest
         except Exception as e:
             logger.exception(f"Error fetching data from Santiment: {e}")
             return None
 
     def bias(self, biasRequest: BiasRequest) -> BiasResponse:
-        threshold = float(get_config("SantimentThreshold", 1.0))
         values = self.fetch_sentiment_data(biasRequest.symbol)
 
-        if values is None or len(values) < 1:
+        if values is None or len(values) < 6:
             return BiasResponse(
                 bias=BiasType.NEUTRAL,
                 error="Not enough data to determine signal.",
@@ -89,22 +89,24 @@ class SantimentBias(BiasInterface):
                 reason="Santiment API returned insufficient or invalid data."
             )
 
-        latest = values[-1]
-        threshold_long = float(get_config("SantimentThresholdLong", 0.25))
-        threshold_short = float(get_config("SantimentThresholdShort", -0.25))
+        *prev5, latest = values[-6:]  # Unpack last 6 into prev5 and latest
+        average = sum(prev5) / len(prev5)
+        diff = latest - average
+        threshold = float(get_config("SantimentThreshold", 0.25))
 
         logger.info(f"Latest sentiment: {latest:.2f}")
-        logger.info(f"Thresholds: Long: {threshold_long:.2f}, Short: {threshold_short:.2f}")
+        logger.info(f"Previous 5-day average: {average:.2f}")
+        logger.info(f"Difference: {diff:.4f} | Threshold: ±{threshold}")
 
-        if latest > threshold_long:
+        if diff > threshold:
             signal = BiasType.LONG
-            reason = f"Latest sentiment {latest:.2f} is above threshold {threshold_long:.2f}"
-        elif latest < threshold_short:
+            reason = f"Signal: LONG — Diff {diff:.4f} > Threshold {threshold}"
+        elif diff < -threshold:
             signal = BiasType.SHORT
-            reason = f"Latest sentiment {latest:.2f} is below threshold {threshold_short:.2f}"
+            reason = f"Signal: SHORT — Diff {diff:.4f} < -Threshold {-threshold}"
         else:
             signal = BiasType.NEUTRAL
-            reason = f"Latest sentiment {latest:.2f} is within thresholds {threshold_short:.2f} and {threshold_long:.2f}"
+            reason = f"Signal: HOLD — Diff {diff:.4f} within ±{threshold}"
 
         return BiasResponse(
             bias=signal,
