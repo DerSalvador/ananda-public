@@ -50,7 +50,7 @@ jobs:
       uses: docker/setup-buildx-action@v2
 
     - name: Get Branch Name
-      id: vars
+      id: config
       run: |
         BRANCH_NAME=${GITHUB_REF#refs/heads/}
         if [ "$BRANCH_NAME" = "main" ]; then
@@ -70,5 +70,5 @@ jobs:
         push: true
         platforms: linux/amd64,linux/arm64
         tags: |
-          ghcr.io/${{ env.REPO_NAME }}/bias:v1.${{ github.run_number }}_${{ env.SHORT_SHA }}${{ steps.vars.outputs.develop }}
-          ghcr.io/${{ env.REPO_NAME }}/bias:${{ steps.vars.outputs.tag }}
+          ghcr.io/${{ env.REPO_NAME }}/bias:v1.${{ github.run_number }}_${{ env.SHORT_SHA }}${{ steps.config.outputs.develop }}
+          ghcr.io/${{ env.REPO_NAME }}/bias:${{ steps.config.outputs.tag }}
