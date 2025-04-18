@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bias Config</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         async function toggleBias(biasName, checkbox) {
@@ -97,6 +98,12 @@
             } catch (err) {
                 console.error('Failed to fetch sentiment data:', err);
             }
+        }
+
+        async function refreshSentiments() {
+            const container = document.getElementById('sentiment-list');
+            container.innerHTML = ''; // Clear existing content
+            await fetchSentiments();
         }
 
         async function showProfitChart(symbol, container) {
@@ -201,10 +208,17 @@
 
     <!-- Sentiment Analysis -->
     <div id="sentiment-container" class="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-4xl mx-auto mt-6 mb-8">
-        <h1 class="text-xl sm:text-2xl font-bold mb-4">Current Sentiment</h1>
-        <div id="sentiment-list" class="space-y-6">
-            <!-- Content populated by JS -->
-        </div>
+      <div class="flex justify-between items-center mb-4">
+        <h1 class="text-xl sm:text-2xl font-bold">Current Sentiment</h1>
+
+        <button onclick="refreshSentiments()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2">
+          <i class="fas fa-arrows-rotate"></i>
+        </button>
+      </div>
+
+      <div id="sentiment-list" class="space-y-6">
+        <!-- Content populated by JS -->
+      </div>
     </div>
 
 </body>
