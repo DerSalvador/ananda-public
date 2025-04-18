@@ -21,11 +21,11 @@ def get_logger(module = "bias"):
     consoleHandler = logging.StreamHandler(stdout)
     consoleHandler.setFormatter(logFormatter)
 
-    logpath = os.getenv("LOG_PATH", "/var/log/cryptoendpoints.log")
-    fileHandler = logging.FileHandler(filename=logpath)
-    fileHandler.setFormatter(logFormatter)
-    fileHandler.setLevel(log_level)
-    logger.addHandler(fileHandler)
+    # logpath = os.getenv("LOG_PATH", "/var/log/cryptoendpoints.log")
+    # fileHandler = logging.FileHandler(filename=logpath)
+    # fileHandler.setFormatter(logFormatter)
+    # fileHandler.setLevel(log_level)
+    # logger.addHandler(fileHandler)
 
     cur_logger = logger
     return logger

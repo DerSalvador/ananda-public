@@ -2,7 +2,7 @@ from functools import cache
 import os
 
 import requests
-from bias.interface import BiasInterface, BiasRequest, BiasResponse, BiasType
+from bias import BiasInterface, BiasRequest, BiasResponse, BiasType
 from utils import get_logger
 
 logger = get_logger()

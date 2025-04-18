@@ -1,5 +1,5 @@
 import os
-from bias.interface import BiasInterface, BiasRequest, BiasResponse, BiasType
+from bias import BiasInterface, BiasRequest, BiasResponse, BiasType
 from binance.client import Client
 import pandas as pd
 

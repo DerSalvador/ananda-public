@@ -2,7 +2,7 @@ import os
 import requests
 from bias.coin_gecko_btc import COIN_GECKO_SYMBOLS
 from utils import get_logger
-from bias.interface import BiasInterface, BiasRequest, BiasResponse, BiasType
+from bias import BiasInterface, BiasRequest, BiasResponse, BiasType
 
 logger = get_logger()
 

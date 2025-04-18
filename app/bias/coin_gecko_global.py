@@ -2,7 +2,7 @@ import os
 
 import requests
 from utils import get_logger
-from bias.interface import BiasInterface, BiasRequest, BiasResponse, BiasType
+from bias import BiasInterface, BiasRequest, BiasResponse, BiasType
 
 logger = get_logger()
 

@@ -4,9 +4,12 @@ import importlib
 import inspect
 import shutil
 from constants import DEFAULT_CONFIG
-from bias.interface import BiasInterface
 from utils import get_logger
 from tinydb import TinyDB, Query
+from abc import abstractmethod
+from typing import Optional
+from pydantic import BaseModel
+from enum import Enum
 
 
 logger = get_logger()
@@ -110,6 +113,39 @@ def getInterfaces(all = False):
                 logger.error(f"Error loading {filename}: {e}")
     logger.info(f"Getting interfaces: {list(interfaces.keys())}")
     return interfaces
+
+class BiasType(str, Enum):
+    NEUTRAL = "neutral"
+    SHORT = "short"
+    LONG = "long"
+
+class BiasRequest(BaseModel):
+    symbol: str
+
+class BiasResponse(BaseModel):
+    bias: BiasType
+    error: Optional[str] = None
+    usedSymbol: bool = False
+    reason: str = ""
+    weight: float = 1.0
+
+class BiasInterface():
+    ignore = False
+    paid = False
+    @abstractmethod
+    def bias(self, biasRequest: BiasRequest) -> BiasResponse:
+        raise NotImplementedError("Method not implemented")
+
+    def bias_wrapper(self, biasRequest: BiasRequest) -> BiasResponse:
+        try:
+            paid_weight = float(get_config("BiasWeightPaid", 1.0))
+            free_weight = float(get_config("BiasWeightFree", 1.0))
+            biasResponse = self.bias(biasRequest)
+            biasResponse.weight = paid_weight if self.paid else free_weight
+            return biasResponse
+        except Exception as e:
+            return BiasResponse(bias=BiasType.NEUTRAL, error=str(e))
+
 
 def init():
     try:

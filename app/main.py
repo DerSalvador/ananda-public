@@ -5,7 +5,7 @@ load_dotenv()
 from db import current_position, should_reverse, update_sentiment
 from bias import get_all_configs, get_biases, get_config, getInterfaces, update_bias, update_config
 from pydantic import BaseModel
-from bias.interface import BiasRequest, BiasResponse, BiasType
+from bias import BiasRequest, BiasResponse, BiasType
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from utils import get_logger
@@ -35,26 +35,37 @@ def post_sentiment(request: BiasRequest, all_sentiments: bool = False) -> dict[s
     sentiments = {}
     interfaces = getInterfaces(all = all_sentiments)
     executor = ThreadPoolExecutor(max_workers=len(interfaces))
-    futures = {executor.submit(interface.bias, request): name for name, interface in interfaces.items()}
+    futures = {executor.submit(interface.bias_wrapper, request): name for name, interface in interfaces.items()}
 
     for future in futures:
         interface_name = futures[future]
         try:
             sentiment = future.result()
+            logger.info(f"Sentiment for {interface_name}: {sentiment}")
             sentiments[interface_name] = sentiment
         except Exception as e:
             sentiments[interface_name] = BiasResponse(bias=BiasType.NEUTRAL, error=str(e))
             logger.exception(f"Error: {e} for {interface_name} and {request.symbol}.")
 
-    # Always restrictive logic
+    # Calculate democratic agreement with weights for paid and free
     sentiment_values = [result.bias for result in sentiments.values()]
-    if sentiment_values and all(s == sentiment_values[0] for s in sentiment_values):
-        reason = f"Final sentiment agreed on {sentiment_values[0]}"
-        logger.info(reason)
-        sentiments["final"] = {"bias": sentiment_values[0], "reason": reason}
+    bias_totals = {}
+    for sentiment in sentiments.values():
+        if sentiment.bias not in bias_totals:
+            bias_totals[sentiment.bias] = 0
+        bias_totals[sentiment.bias] += sentiment.weight
+    total_weight = sum(bias_totals.values())
+    bias_percentages = {}
+    for bias, total in bias_totals.items():
+        bias_percentages[bias] = round(total / total_weight * 100, 2)
+    bias_agreement_percent = float(get_config("BiasAgreementPercent", 50))
+    if BiasType.LONG in bias_percentages and bias_percentages[BiasType.LONG] >= bias_agreement_percent:
+        sentiments["final"] = {"bias": BiasType.LONG, "reason": f"Bias agreement: {bias_percentages[BiasType.LONG]}%", "weight": 0}
+    elif BiasType.SHORT in bias_percentages and bias_percentages[BiasType.SHORT] >= bias_agreement_percent:
+        sentiments["final"] = {"bias": BiasType.SHORT, "reason": f"Bias agreement: {bias_percentages[BiasType.SHORT]}%", "weight": 0}
     else:
-        logger.warn(f"Final sentiment is NEUTRAL")
-        sentiments["final"] = {"bias": BiasType.NEUTRAL, "error": "Sentiments do not agree", "reason": "Sentiments do not agree"}
+        reasonString = f"Bias agreement: short {bias_percentages.get(BiasType.SHORT, 0)}%, long {bias_percentages.get(BiasType.LONG, 0)}%, neutral {bias_percentages.get(BiasType.NEUTRAL, 0)}%"
+        sentiments["final"] = {"bias": BiasType.NEUTRAL, "reason": reasonString, "weight": 0}
 
     # Check back on real values from custom_exit and reverse trend if needed
     should_reverse_bool = should_reverse(request.symbol)

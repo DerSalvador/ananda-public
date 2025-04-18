@@ -1,7 +1,7 @@
 import os
 from functools import cache
 import json
-from bias.interface import BiasType
+from bias import BiasType
 from utils import TimeBasedDeque
 from bias import CONFIG_PATH, get_config
 from tinydb import TinyDB, Query
