@@ -1,3 +1,4 @@
+import requests
 from dotenv import load_dotenv
 from reversetrend import cron_update_profit, get_profits
 load_dotenv()
@@ -12,8 +13,8 @@ from utils import get_logger
 from concurrent.futures import ThreadPoolExecutor
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
+import asyncio
 
-from fastapi_utilities import repeat_every
 import uvicorn
 from datetime import datetime
 
@@ -149,11 +150,15 @@ def _update_sentiment(symbol: str, updateRequest: BiasResponse):
     update_sentiment(symbol, updateRequest.bias)
     return {"status": "success", "message": "Sentiment updated"}
 
+async def _cron_update_profit():
+    while True:
+        cron_update_profit()
+        checkProfitSeconds = int(get_config("CheckProfitSeconds", 5))
+        await asyncio.sleep(checkProfitSeconds)
+
 @app.on_event("startup")
-@repeat_every(seconds=5)
-# @app.get("/update_profit")
-def _cron_update_profit():
-    return cron_update_profit()
+async def _startup():
+    asyncio.create_task(_cron_update_profit())
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=9000, reload=True)

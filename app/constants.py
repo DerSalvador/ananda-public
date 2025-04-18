@@ -25,5 +25,6 @@ DEFAULT_CONFIG = {
     "StakeIncrementStep": 100,
     "Leverage": 5.0,
     "BiasSymbols": "BTC",
-    "BiasShowAll": "true"
+    "BiasShowAll": "true",
+    "CheckProfitSeconds": 5,
 }
