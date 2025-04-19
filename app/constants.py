@@ -1,3 +1,9 @@
+from enum import Enum
+
+class configType(str, Enum):
+    text = "text"
+    percent100 = "percent100"
+
 DEFAULT_CONFIG ={
   "GreedAndFearLimit": {
     "description": "No of entries to fetch from the API for Greed and Fear",
@@ -29,7 +35,8 @@ DEFAULT_CONFIG ={
     "value": 1
   },
   "BiasAgreementPercent": {
-    "value": 80
+    "value": 80,
+    "type": configType.percent100,
   },
   "ReverseTrendShouldBeNegativePercent": {
     "value": 90

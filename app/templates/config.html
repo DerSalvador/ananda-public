@@ -230,6 +230,40 @@
       }
     }
   </script>
+  <script>
+    function renderConfigInput(config) {
+      switch (config.type) {
+        case "percent100":
+          return `
+            <div class="flex items-center space-x-4 w-full sm:w-1/2">
+              <input
+                type="range"
+                id="config-input-${config.name}"
+                name="${config.name}"
+                min="0"
+                max="100"
+                step="${config.increment || 1}"
+                value="${config.value}"
+                class="w-full"
+                oninput="document.getElementById('value-display-${config.name}').textContent = this.value"
+              >
+              <span id="value-display-${config.name}" class="text-sm text-gray-600">${config.value}</span>
+            </div>
+          `;
+        // Add other types here as needed
+        case "text":
+        default:
+          return `
+            <input
+              id="config-input-${config.name}"
+              name="${config.name}"
+              class="border p-2 w-full sm:w-1/2"
+              value="${config.value}"
+            >
+          `;
+      }
+    }
+  </script>
 </head>
 <body class="bg-gray-100 min-h-screen p-4">
 
@@ -251,15 +285,20 @@
     <h1 class="text-xl sm:text-2xl font-bold mb-4">Config</h1>
     <form id="config-form" class="space-y-4">
       {% for config in configs|sort(attribute='name') %}
-      <div class="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
-        <label for="config-input-{{ config.name }}" class="sm:w-1/2 text-gray-700">
-          {{ config.label or config.name }}
-          {% if config.description %}
-          <i class="fas fa-info-circle text-gray-500 ml-1" title="{{ config.description }}"></i>
-          {% endif %}
-        </label>
-        <input id="config-input-{{ config.name }}" name="{{ config.name }}" class="border p-2 w-full sm:w-1/2" value="{{ config.value }}">
-      </div>
+        <div class="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+          <label for="config-input-{{ config.name }}" class="sm:w-1/2 text-gray-700">
+            {{ config.label or config.name }}
+            {% if config.description %}
+              <i class="fas fa-info-circle text-gray-500 ml-1" title="{{ config.description }}"></i>
+            {% endif %}
+          </label>
+          <!-- Render the input using the function -->
+          <div class="w-full sm:w-1/2">
+            <script>
+              document.write(renderConfigInput({{ config|tojson }}));
+            </script>
+          </div>
+        </div>
       {% endfor %}
       <div class="flex justify-end mt-4">
         <button type="submit" class="bg-blue-500 text-white p-2 rounded w-full sm:w-auto">Submit All</button>
