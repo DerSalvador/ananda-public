@@ -85,5 +85,8 @@ DEFAULT_CONFIG ={
   },
   "MinutesPassedForReverseLogic": {
     "value": 60
+  },
+  "MaxReverseAttempts": { 
+    "value": 3
   }
 } 
