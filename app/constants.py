@@ -1,5 +1,7 @@
 DEFAULT_CONFIG ={
   "GreedAndFearLimit": {
+    "description": "No of entries to fetch from the API for Greed and Fear",
+    "label": "Greed and Fear Limit",
     "value": 10
   },
   "ReverseTrendCheckBackSeconds": {
