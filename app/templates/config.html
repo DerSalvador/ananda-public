@@ -10,6 +10,7 @@
   <script src="https://unpkg.com/@popperjs/core@2"></script>
   <script src="https://unpkg.com/tippy.js@6"></script>
   <script>
+    const initialConfigs = {};
     async function toggleBias(biasName, checkbox) {
       const active = checkbox.checked;
       const response = await fetch('/update-bias', {
@@ -25,14 +26,33 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('#config-form [name]').forEach(input => {
+        initialConfigs[input.name] = input.value;
+      });
+
       const form = document.getElementById('config-form');
       form.addEventListener('submit', async function (e) {
         e.preventDefault();
 
-        const formData = new FormData(form);
-        const entries = Array.from(formData.entries());
+        const changedEntries = [];
+        const inputs = form.querySelectorAll('[name]');
 
-        for (const [name, value] of entries) {
+        inputs.forEach(input => {
+          const name = input.name;
+          const newValue = input.value;
+          const oldValue = initialConfigs[name];
+
+          if (newValue !== oldValue) {
+            changedEntries.push({ name, value: newValue });
+          }
+        });
+
+        if (changedEntries.length === 0) {
+          alert('No changes detected.');
+          return;
+        }
+
+        for (const { name, value } of changedEntries) {
           const response = await fetch('/config', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -43,10 +63,12 @@
           if (result.status !== 'success') {
             alert('Error updating ' + name + ': ' + result.message);
             return;
+          } else {
+            initialConfigs[name] = value;
           }
         }
 
-        alert('All configs updated successfully!');
+        alert('Updated changed configs successfully!');
       });
 
       tippy('.fas.fa-info-circle', {
