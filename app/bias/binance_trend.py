@@ -41,7 +41,7 @@ class BinanceTrend(BiasInterface):
 
         # Determine trend
         def trend_logic(row):
-            reason = f"20-day SMA: {row['SMA_20']}, 50-day SMA: {row['SMA_50']}"
+            reason = f"20-day SMA: {round(row['SMA_20'], 2)}, 50-day SMA: {round(row['SMA_50'], 2)}"
             if row['SMA_20'] > row['SMA_50']:
                 return BiasType.LONG, reason
             elif row['SMA_20'] < row['SMA_50']:
