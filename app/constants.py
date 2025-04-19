@@ -27,4 +27,5 @@ DEFAULT_CONFIG = {
     "BiasSymbols": "BTC",
     "BiasShowAll": "true",
     "CheckProfitSeconds": 5,
+    "MinutesPassedForReverseLogic": 60
 }
