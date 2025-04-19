@@ -1,243 +1,285 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bias Config</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
-    <script src="https://unpkg.com/@popperjs/core@2"></script>
-    <script src="https://unpkg.com/tippy.js@6"></script>
-    <script>
-        async function toggleBias(biasName, checkbox) {
-            const active = checkbox.checked;
-            const response = await fetch('/update-bias', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: biasName, active })
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bias Config</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css">
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+  <script src="https://unpkg.com/tippy.js@6"></script>
+  <script>
+    async function toggleBias(biasName, checkbox) {
+      const active = checkbox.checked;
+      const response = await fetch('/update-bias', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: biasName, active })
+      });
+
+      const result = await response.json();
+      if (result.status !== 'success') {
+        alert('Error updating bias: ' + result.message);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('config-form');
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        const entries = Array.from(formData.entries());
+
+        for (const [name, value] of entries) {
+          const response = await fetch('/config', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, value })
+          });
+
+          const result = await response.json();
+          if (result.status !== 'success') {
+            alert('Error updating ' + name + ': ' + result.message);
+            return;
+          }
+        }
+
+        alert('All configs updated successfully!');
+      });
+
+      tippy('.fas.fa-info-circle', {
+        content(reference) {
+          return reference.getAttribute('title');
+        },
+        placement: 'top',
+        theme: 'light',
+        trigger: 'mouseenter focus click',
+      });
+
+      fetchSentiments();
+    });
+
+    async function fetchSentiments() {
+      try {
+        const response = await fetch('/currentsentiment');
+        const data = await response.json();
+        const container = document.getElementById('sentiment-list');
+
+        for (const [symbol, methods] of Object.entries(data)) {
+          const card = document.createElement('div');
+          card.className = 'border border-gray-300 rounded-lg p-4 bg-gray-50';
+
+          const title = document.createElement('h2');
+          title.className = 'text-lg font-semibold text-blue-600 mb-2';
+          title.textContent = symbol;
+          card.appendChild(title);
+
+          Object.entries(methods).forEach(([method, details]) => {
+            const methodContainer = document.createElement('div');
+            methodContainer.className = 'mb-2 border-b border-gray-200 pb-2 last:border-none last:pb-0';
+
+            const row1 = document.createElement('div');
+            row1.className = 'flex justify-between text-sm font-medium';
+            const usedSymbolIcon = details.usedSymbol
+              ? '<span title="Used symbol" class="ml-1 text-green-500">✅</span>'
+              : '<span title="Did not use symbol" class="ml-1 text-gray-400"></span>';
+
+            row1.innerHTML = `
+              <span class="flex items-center text-gray-700">${method}${usedSymbolIcon}</span>
+              <span class="capitalize text-${details.bias === 'long' ? 'green' : details.bias === 'short' ? 'red' : 'gray'}-600">${details.bias}</span>
+            `;
+
+            const row2 = document.createElement('div');
+            row2.className = 'text-xs text-gray-600 mt-1';
+            row2.textContent = details.error || details.reason || '';
+
+            methodContainer.appendChild(row1);
+            methodContainer.appendChild(row2);
+            card.appendChild(methodContainer);
+          });
+
+          const chartContainer = document.createElement('div');
+          chartContainer.className = 'mt-4';
+          card.appendChild(chartContainer);
+
+          const analysisContainer = document.createElement('div');
+          analysisContainer.className = 'mt-6';
+          analysisContainer.innerHTML = `<h3 class="text-md font-semibold text-gray-700 mb-2">Reverse Trend Analysis: <span id="final-${symbol}" class="inline-block px-2 py-1 text-white rounded text-sm ml-2">Loading...</span></h3><div id="analysis-${symbol}" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>`;
+          card.appendChild(analysisContainer);
+
+          container.appendChild(card);
+
+          showProfitChart(symbol, chartContainer);
+          fetchCustomExit(symbol);
+        }
+      } catch (err) {
+        console.error('Failed to fetch sentiment data:', err);
+      }
+    }
+
+    async function fetchCustomExit(symbol) {
+      try {
+        const response = await fetch(`/customexit/${symbol}?full=true`);
+        const data = await response.json();
+        const analysisBox = document.getElementById(`analysis-${symbol}`);
+        const finalTag = document.getElementById(`final-${symbol}`);
+
+        const checks = {
+          "Minimum Count": data.min_count,
+          "All Negative": data.negative_percent,
+          "First > Last": data.first_greater_than_last,
+          "Linear Decreasing": data.linear_decreasing,
+        };
+
+        Object.entries(checks).forEach(([label, check]) => {
+          const card = document.createElement('div');
+          card.className = `p-4 rounded-lg shadow-sm border border-gray-200 bg-white`;
+
+          card.innerHTML = `
+            <div class="flex items-center justify-between">
+              <span class="font-medium text-gray-700">${label}</span>
+              <span class="text-${check.value ? 'green' : 'red'}-500 text-lg">${check.value ? '✅' : '❌'}</span>
+            </div>
+            <div class="text-sm italic text-gray-500 mt-1">${check.reason}</div>
+          `;
+
+          analysisBox.appendChild(card);
         });
- 
-        const result = await response.json();
-            if (result.status !== 'success') {
-                alert('Error updating bias: ' + result.message);
-            }
-        }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const form = document.getElementById('config-form');
-            form.addEventListener('submit', async function (e) {
-                e.preventDefault();
+        const final = data.final;
+        finalTag.textContent = final.value ? '✅ TRUE' : '❌ FALSE';
+        finalTag.className += ` bg-${final.value ? 'green' : 'red'}-500`;
+        finalTag.title = final.reason;
+      } catch (err) {
+        console.error('Error fetching custom exit:', err);
+      }
+    }
 
-                const formData = new FormData(form);
-                const entries = Array.from(formData.entries());
+    async function refreshSentiments() {
+      const container = document.getElementById('sentiment-list');
+      container.innerHTML = '';
+      await fetchSentiments();
+    }
 
-                for (const [name, value] of entries) {
-                    const response = await fetch('/config', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ name, value })
-                    });
+    async function showProfitChart(symbol, container) {
+      try {
+        const response = await fetch(`/profit/${symbol}`);
+        const data = await response.json();
 
-                    const result = await response.json();
-                    if (result.status !== 'success') {
-                        alert('Error updating ' + name + ': ' + result.message);
-                        return;
-                    }
+        const profits = data.map(item => item.profit);
+        const timestamps = data.map(item =>
+          new Date(item.timestamp * 1000).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+          })
+        );
+        const isShorts = data.map(item => item.is_short);
+
+        const oldCanvas = container.querySelector('canvas');
+        if (oldCanvas) oldCanvas.remove();
+
+        const canvas = document.createElement('canvas');
+        container.appendChild(canvas);
+
+        new Chart(canvas.getContext('2d'), {
+          type: 'line',
+          data: {
+            labels: timestamps,
+            datasets: [{
+              label: `${symbol} Profit`,
+              data: profits,
+              borderColor: isShorts[0] ? 'red' : 'green',
+              backgroundColor: 'rgba(0,0,0,0.05)',
+              tension: 0.3,
+              fill: true,
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              title: {
+                display: true,
+                text: `Profit History (${isShorts[0] ? 'Short' : 'Long'})`
+              },
+              legend: {
+                display: false
+              }
+            },
+            scales: {
+              y: {
+                title: {
+                  display: true,
+                  text: 'Profit'
                 }
-
-                alert('All configs updated successfully!');
-            });
-            // Initialize Tippy.js for tooltips
-            tippy('.fas.fa-info-circle', {
-                content(reference) {
-                    return reference.getAttribute('title');
-                },
-                placement: 'top',
-                theme: 'light',
-                trigger: 'mouseenter focus click',
-            });
-
-            fetchSentiments();
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: 'Time'
+                }
+              }
+            }
+          }
         });
-
-        async function fetchSentiments() {
-            try {
-                const response = await fetch('/currentsentiment');
-                const data = await response.json();
-                const container = document.getElementById('sentiment-list');
-
-                for (const [symbol, methods] of Object.entries(data)) {
-                    const card = document.createElement('div');
-                    card.className = 'border border-gray-300 rounded-lg p-4 bg-gray-50';
-
-                    const title = document.createElement('h2');
-                    title.className = 'text-lg font-semibold text-blue-600 mb-2';
-                    title.textContent = symbol;
-
-                    card.appendChild(title);
-
-                    Object.entries(methods).forEach(([method, details]) => {
-                        const methodContainer = document.createElement('div');
-                        methodContainer.className = 'mb-2 border-b border-gray-200 pb-2 last:border-none last:pb-0';
-
-                        const row1 = document.createElement('div');
-                        row1.className = 'flex justify-between text-sm font-medium';
-                        const usedSymbolIcon = details.usedSymbol
-                            ? '<span title="Used symbol" class="ml-1 text-green-500">✅</span>'
-                            : '<span title="Did not use symbol" class="ml-1 text-gray-400"></span>';
-
-                        row1.innerHTML = `
-                            <span class="flex items-center text-gray-700">${method}${usedSymbolIcon}</span>
-                            <span class="capitalize text-${details.bias === 'long' ? 'green' : details.bias === 'short' ? 'red' : 'gray'}-600">${details.bias}</span>
-                        `;
-
-                        const row2 = document.createElement('div');
-                        row2.className = 'text-xs text-gray-600 mt-1';
-                        row2.textContent = details.error || details.reason || '';
-
-                        methodContainer.appendChild(row1);
-                        methodContainer.appendChild(row2);
-                        card.appendChild(methodContainer);
-                    });
-
-                    const chartContainer = document.createElement('div');
-                    chartContainer.className = 'mt-4';
-                    card.appendChild(chartContainer);
-                    container.appendChild(card);
-
-                    showProfitChart(symbol, chartContainer);
-                }
-            } catch (err) {
-                console.error('Failed to fetch sentiment data:', err);
-            }
-        }
-
-        async function refreshSentiments() {
-            const container = document.getElementById('sentiment-list');
-            container.innerHTML = ''; // Clear existing content
-            await fetchSentiments();
-        }
-
-        async function showProfitChart(symbol, container) {
-            try {
-                const response = await fetch(`/profit/${symbol}`);
-                const data = await response.json();
-
-                const profits = data.map(item => item.profit);
-                const timestamps = data.map(item =>
-                    new Date(item.timestamp * 1000).toLocaleTimeString([], {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit'
-                    })
-                );
-                const isShorts = data.map(item => item.is_short);
-
-                // Remove old canvas if exists
-                const oldCanvas = container.querySelector('canvas');
-                if (oldCanvas) oldCanvas.remove();
-
-                const canvas = document.createElement('canvas');
-                container.appendChild(canvas);
-
-                new Chart(canvas.getContext('2d'), {
-                    type: 'line',
-                    data: {
-                        labels: timestamps,
-                        datasets: [{
-                            label: `${symbol} Profit`,
-                            data: profits,
-                            borderColor: isShorts[0] ? 'red' : 'green',
-                            backgroundColor: 'rgba(0,0,0,0.05)',
-                            tension: 0.3,
-                            fill: true,
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: `Profit History (${isShorts[0] ? 'Short' : 'Long'})`
-                            },
-                            legend: {
-                                display: false
-                            }
-                        },
-                        scales: {
-                            y: {
-                                title: {
-                                    display: true,
-                                    text: 'Profit'
-                                }
-                            },
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Time'
-                                }
-                            }
-                        }
-                    }
-                });
-            } catch (err) {
-                alert('Failed to fetch profit data for ' + symbol);
-                console.error(err);
-            }
-        }
-    </script>
+      } catch (err) {
+        alert('Failed to fetch profit data for ' + symbol);
+        console.error(err);
+      }
+    }
+  </script>
 </head>
 <body class="bg-gray-100 min-h-screen p-4">
 
-    <!-- Biases -->
-    <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-4xl mx-auto mt-6">
-        <h1 class="text-xl sm:text-2xl font-bold mb-4">Bias Configuration</h1>
-        <ul class="space-y-3">
-            {% for bias in biases %}
-            <li class="flex items-center">
-                <input type="checkbox" onchange="toggleBias('{{ bias.name }}', this)" class="mr-2" {% if bias.active %}checked{% endif %}>
-                <label class="text-base sm:text-lg">{{ bias.name }} {{ "(Paid)" if bias.paid else "" }}</label>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
+  <!-- Biases -->
+  <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-4xl mx-auto mt-6">
+    <h1 class="text-xl sm:text-2xl font-bold mb-4">Bias Configuration</h1>
+    <ul class="space-y-3">
+      {% for bias in biases %}
+      <li class="flex items-center">
+        <input type="checkbox" onchange="toggleBias('{{ bias.name }}', this)" class="mr-2" {% if bias.active %}checked{% endif %}>
+        <label class="text-base sm:text-lg">{{ bias.name }} {{ "(Paid)" if bias.paid else "" }}</label>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
 
-    <!-- Misc Configs -->
-    <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-4xl mx-auto mt-6">
-        <h1 class="text-xl sm:text-2xl font-bold mb-4">Config</h1>
-        <form id="config-form" class="space-y-4">
-            {% for config in configs %}
-            <div class="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
-                <label for="config-input-{{ config.name }}" class="sm:w-1/2 text-gray-700">
-                    {{ config.label or config.name }}
-                    {% if config.description %}
-                        <i class="fas fa-info-circle text-gray-500 ml-1" title="{{ config.description }}"></i>
-                    {% endif %}
-                </label>
-                <input id="config-input-{{ config.name }}" name="{{ config.name }}" class="border p-2 w-full sm:w-1/2" value="{{ config.value }}">
-            </div>
-            {% endfor %}
-            <div class="flex justify-end mt-4">
-                <button type="submit" class="bg-blue-500 text-white p-2 rounded w-full sm:w-auto">Submit All</button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Sentiment Analysis -->
-    <div id="sentiment-container" class="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-4xl mx-auto mt-6 mb-8">
-      <div class="flex justify-between items-center mb-4">
-        <h1 class="text-xl sm:text-2xl font-bold">Current Sentiment</h1>
-
-        <button onclick="refreshSentiments()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2">
-          <i class="fas fa-arrows-rotate"></i>
-        </button>
+  <!-- Misc Configs -->
+  <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-4xl mx-auto mt-6">
+    <h1 class="text-xl sm:text-2xl font-bold mb-4">Config</h1>
+    <form id="config-form" class="space-y-4">
+      {% for config in configs %}
+      <div class="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+        <label for="config-input-{{ config.name }}" class="sm:w-1/2 text-gray-700">
+          {{ config.label or config.name }}
+          {% if config.description %}
+          <i class="fas fa-info-circle text-gray-500 ml-1" title="{{ config.description }}"></i>
+          {% endif %}
+        </label>
+        <input id="config-input-{{ config.name }}" name="{{ config.name }}" class="border p-2 w-full sm:w-1/2" value="{{ config.value }}">
       </div>
-
-      <div id="sentiment-list" class="space-y-6">
-        <!-- Content populated by JS -->
+      {% endfor %}
+      <div class="flex justify-end mt-4">
+        <button type="submit" class="bg-blue-500 text-white p-2 rounded w-full sm:w-auto">Submit All</button>
       </div>
+    </form>
+  </div>
+
+  <!-- Sentiment Analysis -->
+  <div id="sentiment-container" class="bg-white p-4 sm:p-6 rounded-lg shadow-lg w-full max-w-4xl mx-auto mt-6 mb-8">
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-xl sm:text-2xl font-bold">Current Sentiment</h1>
+      <button onclick="refreshSentiments()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2">
+        <i class="fas fa-arrows-rotate"></i> Refresh
+      </button>
     </div>
+
+    <div id="sentiment-list" class="space-y-6">
+      <!-- Content populated by JS -->
+    </div>
+  </div>
 
 </body>
 </html>
