@@ -4,6 +4,7 @@ class configType(str, Enum):
     text = "text"
     boolean = "boolean"
     percent100 = "percent100"
+    percent1 = "percent1"
 
 DEFAULT_CONFIG ={
   "GreedAndFearLimit": {
@@ -37,16 +38,19 @@ DEFAULT_CONFIG ={
   },
   "BiasAgreementPercent": {
     "value": 80,
-    "type": configType.percent100,
+    # "type": configType.percent100,
+    "increment": 5,
   },
   "ReverseTrendShouldBeNegativePercent": {
     "value": 90
   },
   "ReverseTrendCheckFirstGreater": {
-    "value": "true"
+    "value": "true",
+    "type": configType.boolean,
   },
   "ReverseTrendCheckLinearDecreasing": {
-    "value": "true"
+    "value": "true",
+    "type": configType.boolean,
   },
   "ReverseTrendLinearDecreasingThresholdPercent": {
     "value": 95
@@ -114,7 +118,9 @@ DEFAULT_CONFIG ={
         "value": 0.7
     },
     "ReverseTrendBearishPartialThresholdPct": {
-        "value": 0.75
+        "value": 0.75,
+        # "type": configType.percent1,
+        "increment": 0.05,
     },
     "ReverseTrendCandleDivisor": {
         "value": 3.0

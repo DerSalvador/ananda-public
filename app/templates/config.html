@@ -285,8 +285,24 @@
                 onchange="this.value = this.checked ? 'true' : 'false'"
                 class="form-checkbox h-5 w-5 text-blue-600"
               >
-              <span class="text-sm text-gray-700">${config.label || config.name}</span>
             </label>
+          `;
+        case "percent1":
+          return `
+            <div class="flex items-center space-x-4 w-full sm:w-1/2">
+              <input
+                type="range"
+                id="config-input-${config.name}"
+                name="${config.name}"
+                min="0"
+                max="1"
+                step="${config.increment || 0.01}"
+                value="${config.value}"
+                class="w-full"
+                oninput="document.getElementById('value-display-${config.name}').textContent = this.value"
+              >
+              <span id="value-display-${config.name}" class="text-sm text-gray-600">${config.value}</span>
+            </div>
           `;
         case "text":
         default:
