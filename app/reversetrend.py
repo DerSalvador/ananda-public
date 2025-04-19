@@ -153,6 +153,10 @@ def detectBullishOrBearishCandle(df: pd.DataFrame):
         return Trend.LINEAR_STABLE
 
 def is_linear_decreasing(profits, symbol: str):
+    should_check_linear_decreasing = get_config("ReverseTrendCheckLinearDecreasing", "true") == "true"
+    if not should_check_linear_decreasing:
+        return f"Check linear decreasing is disabled for {symbol}", True
+
     logger.info(f"Checking if profits are linear decreasing for {symbol}...")
     profit_values = [profit.get("profit", 0) for profit in profits]
     df = pd.DataFrame(profit_values, columns=["current_profit"])
