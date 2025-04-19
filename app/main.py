@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from reversetrend import cron_update_profit, get_profits
 load_dotenv()
 
-from db import current_position, should_reverse, update_sentiment
+from db import current_position, update_sentiment
 from bias import get_all_configs, get_biases, get_config, getInterfaces, update_bias, update_config
 from pydantic import BaseModel
 from bias import BiasRequest, BiasResponse, BiasType
@@ -68,18 +68,7 @@ def post_sentiment(request: BiasRequest, all_sentiments: bool = False) -> dict[s
         reasonString = f"Bias agreement: short {bias_percentages.get(BiasType.SHORT, 0)}%, long {bias_percentages.get(BiasType.LONG, 0)}%, neutral {bias_percentages.get(BiasType.NEUTRAL, 0)}%"
         sentiments["final"] = {"bias": BiasType.NEUTRAL, "reason": reasonString, "weight": 0}
 
-    # Check back on real values from custom_exit and reverse trend if needed
-    should_reverse_bool = should_reverse(request.symbol)
-    logger.info(f"Should reverse: {should_reverse_bool}")
-    if should_reverse_bool:
-        cur_position = current_position(request.symbol)
-        if cur_position == sentiments["final"]["bias"]:
-            logger.info(f"Reversing position for {request.symbol} to LONG")
-            if cur_position == BiasType.SHORT:
-                sentiments["final"] = {"bias": BiasType.LONG, "reason": "Sentiments agreed on SHORT, reversing position"}
-            elif cur_position == BiasType.LONG:
-                sentiments["final"] = {"bias": BiasType.SHORT, "reason": "Sentiments agreed on LONG, reversing position"}
-
+    #TODO: reverse logic
     return sentiments
 
 class UpdateBiasRequest(BaseModel):
@@ -141,8 +130,8 @@ def _get_profit(symbol: str):
 
 @app.get("/customexit/{symbol}")
 def custom_exit(symbol: str):
-    should_reverse_bool = should_reverse(symbol)
-    return { "exit": should_reverse_bool, "position": current_position(symbol) }
+    # TODO: Implement custom exit logic
+    return { "exit": False, "position": current_position(symbol) }
 
 @app.post("/sentiment/{symbol}")
 def _update_sentiment(symbol: str, updateRequest: BiasResponse):
