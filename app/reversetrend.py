@@ -74,99 +74,92 @@ class Trend:
     BEARISH = "Bearish"
 
 def populateTrend(df: pd.DataFrame) -> pd.DataFrame:
-    short_window=int(get_config("ReverseTrendMACDShortWindow", 6))
-    long_window=int(get_config("ReverseTrendMACDLongWindow", 26))
-    signal_window=int(get_config("ReverseTrendMACDSignalWindow", 9))
-    # Calculate the short term exponential moving average (EMA)
+    short_window = int(get_config("ReverseTrendMACDShortWindow", 6))
+    long_window = int(get_config("ReverseTrendMACDLongWindow", 26))
+    signal_window = int(get_config("ReverseTrendMACDSignalWindow", 9))
+
     df['EMA_short'] = df['current_profit'].ewm(span=short_window, adjust=True).mean()
-    # Calculate the long term exponential moving average (EMA)
     df['EMA_long'] = df['current_profit'].ewm(span=long_window, adjust=True).mean()
-    # Calculate the MACD line
     df['MACD'] = df['EMA_short'] - df['EMA_long']
-    # Calculate the Signal line
     df['Signal_Line'] = df['MACD'].ewm(span=signal_window, adjust=False).mean()
-    # Determine the trend
     df['Trend'] = df.apply(lambda row: 'Bullish' if row['MACD'] > row['Signal_Line'] else 'Bearish', axis=1)
+
     return df
 
-def determineTrend(overall_result, partial_length, df):
+def determineTrend(overall_result, partial_length, df, label: str):
     bullish_count = df['Trend'].value_counts().get('Bullish', 0)
     bearish_count = df['Trend'].value_counts().get('Bearish', 0)
-    bullish_partial_threshold_pct = float(get_config("ReverseTrendBullishPartialThresholdPct", 0.7))
-    bearish_partial_threshold_pct = float(get_config("ReverseTrendBearishPartialThresholdPct", 0.7))
-    if bullish_count / partial_length >= bullish_partial_threshold_pct or overall_result == Trend.BULLISH:
-        return Trend.BULLISH
-    elif bearish_count / partial_length >= bearish_partial_threshold_pct or overall_result == Trend.BEARISH:
-        return Trend.BEARISH
+
+    bullish_threshold = float(get_config("ReverseTrendBullishPartialThresholdPct", 0.7))
+    bearish_threshold = float(get_config("ReverseTrendBearishPartialThresholdPct", 0.7))
+
+    if bullish_count / partial_length >= bullish_threshold or overall_result == Trend.BULLISH:
+        return Trend.BULLISH, f"{label}: Bullish {bullish_count}/{partial_length} ≥ {bullish_threshold}"
+    elif bearish_count / partial_length >= bearish_threshold or overall_result == Trend.BEARISH:
+        return Trend.BEARISH, f"{label}: Bearish {bearish_count}/{partial_length} ≥ {bearish_threshold}"
     else:
-        return Trend.LINEAR_STABLE
+        return Trend.LINEAR_STABLE, f"{label}: No clear trend (Bullish {bullish_count}/{partial_length}, Bearish {bearish_count}/{partial_length})"
 
 def detectBullishOrBearishCandle(df: pd.DataFrame):
-    if df.empty is True:
-        logger.info("Warning: Dataframe is empty in detectBullishOrBearishCandle")
-        return Trend.LINEAR_STABLE   
-    logger.info(df)        
+    if df.empty:
+        return "Dataframe empty → Linear Stable", Trend.LINEAR_STABLE
+
     df = populateTrend(df)
-    bullish_threshold_pct = float(get_config("ReverseTrendBullishThresholdPct", 0.7))
-    bearish_threshold_pct = float(get_config("ReverseTrendBearishThresholdPct", 0.7))
+
+    bullish_threshold = float(get_config("ReverseTrendBullishThresholdPct", 0.7))
+    bearish_threshold = float(get_config("ReverseTrendBearishThresholdPct", 0.7))
+
     bullish_count = df['Trend'].value_counts().get('Bullish', 0)
     bearish_count = df['Trend'].value_counts().get('Bearish', 0)
-    total_rows = len(df)
-    if bullish_count / total_rows >= bullish_threshold_pct:
+    total = len(df)
+
+    if bullish_count / total >= bullish_threshold:
         overall_result = Trend.BULLISH
-    elif bearish_count / total_rows >= bearish_threshold_pct:
+        reason = f"Overall: Bullish {bullish_count}/{total} ≥ {bullish_threshold}"
+    elif bearish_count / total >= bearish_threshold:
         overall_result = Trend.BEARISH
+        reason = f"Overall: Bearish {bearish_count}/{total} ≥ {bearish_threshold}"
     else:
         overall_result = Trend.LINEAR_STABLE
-    logger.info(f"Overall Result (whole dataframe) Trend: {overall_result}")
+        reason = f"Overall: No clear trend (Bullish {bullish_count}/{total}, Bearish {bearish_count}/{total})"
 
     candle_divisor = float(get_config("ReverseTrendCandleDivisor", 3.0))
-    partial_length = round(float(total_rows) // candle_divisor)
-    if partial_length > 0 and len(df) > partial_length:
+    partial_length = round(float(total) // candle_divisor)
+
+    if partial_length > 0 and total > partial_length:
         last_partial_df = df[-partial_length:]
         first_partial_df = df[:-partial_length]
-        first_partial_result = determineTrend(overall_result, partial_length, first_partial_df)
-        last_partial_result = determineTrend(overall_result, partial_length, last_partial_df)
-        logger.info(first_partial_df)
-        logger.info(f"first_partial_result={first_partial_result}")
-        logger.info(last_partial_df)
-        logger.info(f"last_partial_result={last_partial_result}")
 
-        # Check the last 3 rows
-        last_trend_entries = int(get_config("ReverseTrendLastTrendEntries", 3))
-        if last_trend_entries > len(df):
-            logger.info(f"Last trends entries {last_trend_entries} is greater than candle length {len(df)} adjusting to candle length")
-            update_config("ReverseTrendLastTrendEntries", len(df))
-            last_trend_entries = len(df)
-        last_trends = df['Trend'].tail(last_trend_entries)
-        if all(last_trends == 'Bullish') and overall_result == Trend.BULLISH and last_partial_result == Trend.BULLISH and first_partial_result == Trend.BULLISH:
-            overall_result = Trend.BULLISH
-        elif all(last_trends == 'Bearish') and overall_result == Trend.BEARISH and last_partial_result == Trend.BEARISH and first_partial_result == Trend.BEARISH:
-            overall_result = Trend.BEARISH
+        first_trend, first_reason = determineTrend(overall_result, partial_length, first_partial_df, "First")
+        last_trend, last_reason = determineTrend(overall_result, partial_length, last_partial_df, "Last")
+
+        last_entries = int(get_config("ReverseTrendLastTrendEntries", 3))
+        last_entries = min(last_entries, total)
+        last_trends = df['Trend'].tail(last_entries)
+
+        all_bullish = all(last_trends == 'Bullish')
+        all_bearish = all(last_trends == 'Bearish')
+
+        if all_bullish and overall_result == Trend.BULLISH and first_trend == Trend.BULLISH and last_trend == Trend.BULLISH:
+            return "All segments bullish → Bullish trend confirmed", Trend.BULLISH
+        elif all_bearish and overall_result == Trend.BEARISH and first_trend == Trend.BEARISH and last_trend == Trend.BEARISH:
+            return "All segments bearish → Bearish trend confirmed", Trend.BEARISH
         else:
-            overall_result = Trend.LINEAR_STABLE
-        logger.info(f"End Detect Overall Trend for Dataframe: overall_result={overall_result}")        
-        logger.info(f"all(last_trends)={all(last_trends == 'Bullish')}, overall_result={overall_result}, last_partial_result=last_partial_result={last_partial_result}")
-        return overall_result
+            return f"Segments mixed → {reason}", Trend.LINEAR_STABLE
     else:
-        logger.info(f"partial_length={partial_length} > 0 and len(df)={len(df)} > partial_length={partial_length} is false, no detectBullishOrBearishCandle")
-        return Trend.LINEAR_STABLE
+        return f"{reason} (not enough data for partial analysis)", Trend.LINEAR_STABLE
 
 def is_linear_decreasing(profits, symbol: str):
-    should_check_linear_decreasing = get_config("ReverseTrendCheckLinearDecreasing", "true") == "true"
-    if not should_check_linear_decreasing:
-        return f"Check linear decreasing is disabled for {symbol}", True
+    if get_config("ReverseTrendCheckLinearDecreasing", "true") != "true":
+        return f"Linear decreasing check disabled for {symbol}", True
 
-    logger.info(f"Checking if profits are linear decreasing for {symbol}...")
-    profit_values = [profit.get("profit", 0) for profit in profits]
-    df = pd.DataFrame(profit_values, columns=["current_profit"])
-    trend = detectBullishOrBearishCandle(df)
-    if trend == Trend.BULLISH or trend == Trend.LINEAR_STABLE:
-        return "no", False
-    elif trend == Trend.BEARISH:
-        return "yes", True
+    df = pd.DataFrame([p.get("profit", 0) for p in profits], columns=["current_profit"])
+    reason, trend = detectBullishOrBearishCandle(df)
+
+    if trend == Trend.BEARISH:
+        return f"{symbol}: {reason}", True
     else:
-        return f"cannot determine trend for {symbol} in is_linear_decreasing", False
+        return f"{symbol}: {reason}", False
 
 def reverse_trend(symbol: str, full=False):
     profits = get_profits(symbol)
