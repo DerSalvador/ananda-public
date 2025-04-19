@@ -1,9 +1,9 @@
 import requests
 from dotenv import load_dotenv
-from reversetrend import cron_update_profit, get_profits
+from reversetrend import cron_update_profit, get_profits, reverse_trend
 load_dotenv()
 
-from db import current_position, update_sentiment
+from db import update_sentiment
 from bias import get_all_configs, get_biases, get_config, getInterfaces, update_bias, update_config
 from pydantic import BaseModel
 from bias import BiasRequest, BiasResponse, BiasType
@@ -129,8 +129,9 @@ def _get_profit(symbol: str):
     return profits
 
 @app.get("/customexit/{symbol}")
-def custom_exit(symbol: str):
+def custom_exit(symbol: str, full: bool = False):
     # TODO: Implement custom exit logic
+    return reverse_trend(symbol, full)
     return { "exit": False, "position": current_position(symbol) }
 
 @app.post("/sentiment/{symbol}")

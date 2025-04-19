@@ -20,18 +20,6 @@ def update_sentiment(symbol: str, sentiment: str):
         real_sentiments[symbol] = TimeBasedDeque(60*60*2)
     real_sentiments[symbol].add(sentiment)
 
-def current_position(symbol: str):
-    if symbol not in profits:
-        return BiasType.NEUTRAL
-    seconds_to_check = int(get_config("ReverseTrendCheckBackSeconds", 60*10))
-    last_bias = [x.get("is_short") for x in profits[symbol].get_items_last_x_seconds(seconds_to_check)]
-    if not last_bias:
-        return BiasType.NEUTRAL
-    if last_bias[-1]:
-        return BiasType.SHORT
-    else:
-        return BiasType.LONG
-
 def is_linear_decreasing(profits, threshold = 95.0):
     if len(profits) < 2:
         return False  # not enough data to compute a line

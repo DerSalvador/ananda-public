@@ -87,5 +87,32 @@ DEFAULT_CONFIG ={
   },
   "MinutesPassedForReverseLogic": {
     "value": 60
-  }
+  },
+  "ReverseTrendMACDShortWindow": {
+    "value": 6
+  },
+  "ReverseTrendMACDLongWindow": {
+      "value": 26
+  },
+  "ReverseTrendMACDSignalWindow": {
+      "value": 9
+  },
+  "ReverseTrendBullishThresholdPct": {
+      "value": 0.7
+  },
+    "ReverseTrendBullishPartialThresholdPct": {
+        "value": 0.75
+    },
+    "ReverseTrendBearishThresholdPct": {
+        "value": 0.7
+    },
+    "ReverseTrendBearishPartialThresholdPct": {
+        "value": 0.75
+    },
+    "ReverseTrendCandleDivisor": {
+        "value": 3.0
+    },
+    "ReverseTrendLastTrendEntries": {
+        "value": 3
+    }
 } 
