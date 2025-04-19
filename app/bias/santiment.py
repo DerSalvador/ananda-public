@@ -76,10 +76,11 @@ class SantimentBias(BiasInterface):
             return values[-6:]  # Last 6: previous 5 + latest
         except Exception as e:
             logger.exception(f"Error fetching data from Santiment: {e}")
-            return None
+            raise e
 
     def bias(self, biasRequest: BiasRequest) -> BiasResponse:
         values = self.fetch_sentiment_data(biasRequest.symbol)
+
 
         if values is None or len(values) < 6:
             return BiasResponse(
