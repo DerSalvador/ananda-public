@@ -2,6 +2,7 @@ from enum import Enum
 
 class configType(str, Enum):
     text = "text"
+    boolean = "boolean"
     percent100 = "percent100"
 
 DEFAULT_CONFIG ={
@@ -84,7 +85,9 @@ DEFAULT_CONFIG ={
     "value": "BTC"
   },
   "BiasShowAll": {
-    "value": "true"
+    "value": "true",
+    "Description": "In the current sentiment section, whether to match strategy code (false) or to debug every bias (true)",
+    "type": configType.boolean
   },
   "CheckProfitSeconds": {
     "value": 5

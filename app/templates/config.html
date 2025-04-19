@@ -273,6 +273,21 @@
             </div>
           `;
         // Add other types here as needed
+        case "boolean":
+          return `
+            <label class="inline-flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="config-input-${config.name}"
+                name="${config.name}"
+                value="true"
+                ${config.value === "true" ? "checked" : ""}
+                onchange="this.value = this.checked ? 'true' : 'false'"
+                class="form-checkbox h-5 w-5 text-blue-600"
+              >
+              <span class="text-sm text-gray-700">${config.label || config.name}</span>
+            </label>
+          `;
         case "text":
         default:
           return `
