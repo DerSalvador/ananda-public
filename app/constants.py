@@ -1,31 +1,89 @@
-DEFAULT_CONFIG = {
-    "GreedAndFearLimit": 10,
-    "ReverseTrendCheckBackSeconds": 1800,
-    "ReverseTrendCheckMinCount": 120,
-    "SantimentThreshold": 0.25,
-    "ReverseTrendCheckPercentageAgreeThreshold": 100,
-    "SantimentFromTimeDaysAgo": 7,
-    "SantimentToTimeDaysAgo": 0,
-    "ReturnOnInvest": 0.12,
-    "BiasWeightPaid": 2,
-    "BiasWeightFree": 1,
-    "BiasAgreementPercent": 80,
-    "ReverseTrendShouldBeNegativePercent": 90,
-    "ReverseTrendCheckFirstGreater": "true",
-    "ReverseTrendCheckLinearDecreasing": "true",
-    "ReverseTrendLinearDecreasingThresholdPercent": 95,
-    "WinrateHigh": 0.7,
-    "WinrateLow": 0.3,
-    "StoplossWinrateHigh": -0.1,
-    "StoplossWinrateLow": -0.18,
-    "StoplossWinrateNeutral": -0.12,
-    "MaxStake": 1000,
-    "MinStake": 100,
-    "DefaultStake": 200,
-    "StakeIncrementStep": 100,
-    "Leverage": 3.0,
-    "BiasSymbols": "BTC",
-    "BiasShowAll": "true",
-    "CheckProfitSeconds": 5,
-    "MinutesPassedForReverseLogic": 60
-}
+DEFAULT_CONFIG ={
+  "GreedAndFearLimit": {
+    "value": 10
+  },
+  "ReverseTrendCheckBackSeconds": {
+    "value": 1800
+  },
+  "ReverseTrendCheckMinCount": {
+    "value": 120
+  },
+  "SantimentThreshold": {
+    "value": 0.25
+  },
+  "ReverseTrendCheckPercentageAgreeThreshold": {
+    "value": 100
+  },
+  "SantimentFromTimeDaysAgo": {
+    "value": 7
+  },
+  "SantimentToTimeDaysAgo": {
+    "value": 0
+  },
+  "ReturnOnInvest": {
+    "value": 0.12
+  },
+  "BiasWeightPaid": {
+    "value": 2
+  },
+  "BiasWeightFree": {
+    "value": 1
+  },
+  "BiasAgreementPercent": {
+    "value": 80
+  },
+  "ReverseTrendShouldBeNegativePercent": {
+    "value": 90
+  },
+  "ReverseTrendCheckFirstGreater": {
+    "value": "true"
+  },
+  "ReverseTrendCheckLinearDecreasing": {
+    "value": "true"
+  },
+  "ReverseTrendLinearDecreasingThresholdPercent": {
+    "value": 95
+  },
+  "WinrateHigh": {
+    "value": 0.7
+  },
+  "WinrateLow": {
+    "value": 0.3
+  },
+  "StoplossWinrateHigh": {
+    "value": -0.1
+  },
+  "StoplossWinrateLow": {
+    "value": -0.18
+  },
+  "StoplossWinrateNeutral": {
+    "value": -0.12
+  },
+  "MaxStake": {
+    "value": 1000
+  },
+  "MinStake": {
+    "value": 100
+  },
+  "DefaultStake": {
+    "value": 200
+  },
+  "StakeIncrementStep": {
+    "value": 100
+  },
+  "Leverage": {
+    "value": 3
+  },
+  "BiasSymbols": {
+    "value": "BTC"
+  },
+  "BiasShowAll": {
+    "value": "true"
+  },
+  "CheckProfitSeconds": {
+    "value": 5
+  },
+  "MinutesPassedForReverseLogic": {
+    "value": 60
+  }
+} 

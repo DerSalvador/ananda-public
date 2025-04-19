@@ -163,5 +163,5 @@ def init():
     for name, value in configs.items():
         table = biasdb.table("configs")
         if not table.get(Query().name == name):
-            table.insert({"name": name, "value": value})
+            table.insert({"name": name, "value": value.get("value")})
 init()
