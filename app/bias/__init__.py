@@ -59,6 +59,7 @@ def get_all_configs():
     for config in all_configs:
         if config["name"] in DEFAULT_CONFIG:
             filtered_configs.append(config)
+    filtered_configs.sort(key=lambda config: config.get("label", config["name"]))
     return filtered_configs
 
 # Get the directory of the current file
