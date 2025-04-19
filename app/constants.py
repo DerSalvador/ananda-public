@@ -39,6 +39,7 @@ DEFAULT_CONFIG ={
   "BiasAgreementPercent": {
     "value": 80,
     # "type": configType.percent100,
+    "type": configType.text,
     "increment": 5,
   },
   "ReverseTrendShouldBeNegativePercent": {
@@ -90,7 +91,7 @@ DEFAULT_CONFIG ={
   },
   "BiasShowAll": {
     "value": "true",
-    "Description": "In the current sentiment section, whether to match strategy code (false) or to debug every bias (true)",
+    "description": "In the current sentiment section, whether to match strategy code (false) or to debug every bias (true)",
     "type": configType.boolean
   },
   "CheckProfitSeconds": {
@@ -120,6 +121,7 @@ DEFAULT_CONFIG ={
     "ReverseTrendBearishPartialThresholdPct": {
         "value": 0.75,
         # "type": configType.percent1,
+        "type": configType.text,
         "increment": 0.05,
     },
     "ReverseTrendCandleDivisor": {
