@@ -191,8 +191,6 @@ DEFAULT_CONFIG ={
         "type": configType.text,
         "increment": 0.05,
     },
-    "description": "",
-    "label": "",
     "ReverseTrendCandleDivisor": {
         "value": 3.0
     },
