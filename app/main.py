@@ -1,6 +1,6 @@
 import requests
 from dotenv import load_dotenv
-from reversetrend import cron_update_profit, get_profits, reverse_trend
+# from reversetrend import cron_update_profit, get_profits, reverse_trend
 load_dotenv()
 
 from db import update_sentiment
@@ -125,13 +125,14 @@ def _update_config(data: UpdateConfigRequest):
 
 @app.get("/profit/{symbol}")
 def _get_profit(symbol: str):
-    profits = get_profits(symbol)
+    # profits = get_profits(symbol)
+    profits = {}
     return profits
 
 @app.get("/customexit/{symbol}")
 def custom_exit(symbol: str, full: bool = False):
     # TODO: Implement custom exit logic
-    return reverse_trend(symbol, full)
+    # return reverse_trend(symbol, full)
     return { "exit": False, "position": current_position(symbol) }
 
 @app.post("/sentiment/{symbol}")
@@ -142,7 +143,7 @@ def _update_sentiment(symbol: str, updateRequest: BiasResponse):
 
 async def _cron_update_profit():
     while True:
-        cron_update_profit()
+        # cron_update_profit()
         checkProfitSeconds = int(get_config("CheckProfitSeconds", 5))
         await asyncio.sleep(checkProfitSeconds)
 
