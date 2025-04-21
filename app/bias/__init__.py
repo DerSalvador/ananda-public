@@ -161,7 +161,7 @@ def init():
         else:
             biasdb.update({"paid": interfaces[bias].paid}, Query().name == bias)
     configs = DEFAULT_CONFIG
-    print(config.items())
+    print(configs.items())
     for name, value in configs.items():
         print(f"name={name}, value={value}")
         table = biasdb.table("configs")
