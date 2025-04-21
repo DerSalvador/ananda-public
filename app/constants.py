@@ -14,129 +14,129 @@ DEFAULT_CONFIG ={
   },
   "ReverseTrendCheckBackSeconds": {
     "description": "Retrieve last n seconds in profit array to use for reverse logic ",
-    "label": "",
+    "label": "ReverseTrendCheckBackSeconds",
     "value": 1800
   },
   "ReverseTrendCheckMinCount": {
     "description": "Check current profits array last elements",
-    "label": "",
+    "label": "ReverseTrendCheckMinCount",
     "value": 120
   },
   "SantimentThreshold": {
     "description": "Sentiment threshold to determine signal, over 0.25 = long, less -0.25 = short",
-    "label": "",
+    "label": "SantimentThreshold",
     "value": 0.25
   },
   "SantimentFromTimeDaysAgo": {
     "description": "Santiment from day to determine signal. (7d minimum)",
-    "label": "",
+    "label": "SantimentFromTimeDaysAgo",
     "value": 7
   },
   "SantimentToTimeDaysAgo": {
     "description": "Santiment to day (0=today)",
-    "label": "",
+    "label": "SantimentToTimeDaysAgo",
     "value": 0
   },
   "ReturnOnInvest": {
     "description": "Initial ROI for custom_exit",
-    "label": "",
+    "label": "ReturnOnInvest",
     "value": 0.12
   },
   "BiasWeightPaid": {
     "description": "Bias importance weight when calculating final bias for free endpoints, greater 1 are more important",
-    "label": "",
+    "label": "BiasWeightPaid",
     "value": 1
   },
   "BiasWeightFree": {
     "description": "Bias importance weight when calculating final bias for free endpoints",
-    "label": "",
+    "label": "BiasWeightFree",
     "value": 1
   },
   "BiasAgreementPercent": {
     "description": "Accuracy of bias agreement. 100% means all biases must agree",
-    "label": "",
+    "label": "BiasAgreementPercent",
     "value": 100,
     "increment": 5
   },
   "ReverseTrendShouldBeNegativePercent": {
     "description": "Check if all profits in array are negative to determine reverse entry (sell and buy reverse)",
-    "label": "",
+    "label": "ReverseTrendShouldBeNegativePercent",
     "value": 90
   },
   "ReverseTrendCheckFirstGreater": {
     "description": "Check if first profit is greater than last profit to determine reverse entry (sell and buy reverse)",
-    "label": "",
+    "label": "ReverseTrendCheckFirstGreater",
     "value": "true"
   },
   "ReverseTrendCheckLinearDecreasing": {
     "description": "Check linear decreasing or not (true or false)",
-    "label": "",
+    "label": "ReverseTrendCheckLinearDecreasing",
     "value": "true"
   },
   "ReverseTrendLinearDecreasingThresholdPercent": {
     "description": "Accuracy of linear decreasing curve",
-    "label": "",
+    "label": "ReverseTrendLinearDecreasingThresholdPercent",
     "value": 100
   },
   "WinrateHigh": {
     "description": "Threshold for adjusting stoploss and stake",
-    "label": "",
+    "label": "WinrateHigh",
     "value": 0.7
   },
   "WinrateLow": {
     "description": "Threshold for adjusting stoploss and stake",
-    "label": "",
+    "label": "WinrateLow",
     "value": 0.3
   },
   "StoplossWinrateHigh": {
     "description": "Adjustment to stoploss according to winrate. If winrate is higher Winratehigh tighten stoploss",
-    "label": "",
+    "label": "StoplossWinrateHigh",
     "value": -0.1
   },
   "StoplossWinrateLow": {
     "description": "Adjustment to stoploss according to winrate. If winrate is below WinrateLow increase stoploss",
-    "label": "",
+    "label": "StoplossWinrateLow",
     "value": -0.18
   },
   "StoplossWinrateNeutral": {
     "description": "Stoploss used in custom_exit to exit trade, custom_stoploss in strategy returns always -0.99",
-    "label": "",
+    "label": "StoplossWinrateNeutral",
     "value": -0.12
   },
   "MaxStake": {
     "description": "Upper Stake limit when adjusting stake",
-    "label": "",
+    "label": "MaxStake",
     "value": 1000
   },
   "MinStake": {
     "description": "Lower Stake limit when adjusting stake",
-    "label": "",
+    "label": "MinStake",
     "value": 100
   },
   "DefaultStake": {
     "description": "Used to return custom_stake_amout to freqtrade to fullfill trades",
-    "label": "Used to return custom_stake_amout to freqtrade to fullfill trades",
+    "label": "DefaultStake",
     "value": 200
   },
   "StakeIncrementStep": {
     "description": "Used to adjust stake amount according to winrate or lost trade",
-    "label": "Used to adjust stake amount according to winrate or lost trade",
+    "label": "StakeIncrementStep",
     "value": 100
   },
   "Leverage": {
     "description": "High Risk, factor to multipy DefautlStake with to increase stake amount, risk of loosing everything",
-    "label": "factor to multipy DefautlStake with to increase stake amount",
+    "label": "Leverage",
     "value": 3
   },
   "BiasSymbols": {
     "description": "Show sentiment for these symbols at the bottom",
-    "label": "Show sentiment for these symbols at the bottom",
+    "label": "BiasSymbols",
     "value": "BTC"
   },
   "BiasShowAll": {
     "value": "true",
     "description": "In the current sentiment section, whether to match strategy code (false) or to debug every bias (true)",
-    "label": "whether to match strategy code (false) or to debug every bias (true)"
+    "label": "BiasShowAll"
   },
   "CheckProfitSeconds": {
     "description": "CheckProfitSeconds",
@@ -145,7 +145,7 @@ DEFAULT_CONFIG ={
   },
   "MinutesPassedForReverseLogic": {
     "description": "Check reversing trade after n minutes",
-    "label": "Check reversing trade after n minutes",
+    "label": "MinutesPassedForReverseLogic",
     "value": 60
   },
   "ReverseTrendMACDShortWindow": {
@@ -196,7 +196,7 @@ DEFAULT_CONFIG ={
     },
   "MaxReverseAttempts": { 
     "description": "Reverse (sell and buy reverse direction) when stoploss reached or reverse conditions are met (linear decreasing current profit)",
-    "label": "Max Reverse Trade Count for a pair, when reached pair will be blacklisted",
+    "label": "MaxReverseAttempts",
     "value": 3
   }
 } 
