@@ -191,9 +191,9 @@ DEFAULT_CONFIG ={
         "type": configType.text,
         "increment": 0.05,
     },
-    "description": "",
-    "label": "",
     "ReverseTrendCandleDivisor": {
+      "description": "",
+      "label": "",
         "value": 3.0
     },
     "ReverseTrendLastTrendEntries": {
