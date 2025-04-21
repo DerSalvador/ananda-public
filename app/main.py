@@ -170,7 +170,8 @@ def custom_exit(symbol: str, full: bool = False):
     return { "exit": False, "position": current_position(symbol) }
     return reverse_trend(symbol, full)
     # return reverse_trend(symbol, full)
-    return { "exit": False, "position": current_position(symbol) }
+    # return { "exit": False, "position": current_position(symbol) }
+    return { "exit": False, "position": "Test-987" }
 
 @app.post("/sentiment/{symbol}")
 def _update_sentiment(symbol: str, updateRequest: BiasResponse):
