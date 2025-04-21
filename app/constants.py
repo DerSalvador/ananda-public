@@ -192,6 +192,8 @@ DEFAULT_CONFIG ={
         "increment": 0.05,
     },
     "ReverseTrendCandleDivisor": {
+      "description": "",
+      "label": "",
         "value": 3.0
     },
     "ReverseTrendLastTrendEntries": {
