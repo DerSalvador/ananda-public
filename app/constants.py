@@ -56,9 +56,7 @@ DEFAULT_CONFIG ={
     "description": "Accuracy of bias agreement. 100% means all biases must agree",
     "label": "",
     "value": 100,
-    # "type": configType.percent100,
-    "type": configType.text,
-    "increment": 5,
+    "increment": 5
   },
   "ReverseTrendShouldBeNegativePercent": {
     "description": "Check if all profits in array are negative to determine reverse entry (sell and buy reverse)",
@@ -68,14 +66,12 @@ DEFAULT_CONFIG ={
   "ReverseTrendCheckFirstGreater": {
     "description": "Check if first profit is greater than last profit to determine reverse entry (sell and buy reverse)",
     "label": "",
-    "value": "true",
-    "type": configType.boolean,
+    "value": "true"
   },
   "ReverseTrendCheckLinearDecreasing": {
     "description": "Check linear decreasing or not (true or false)",
     "label": "",
-    "value": "true",
-    "type": configType.boolean,
+    "value": "true"
   },
   "ReverseTrendLinearDecreasingThresholdPercent": {
     "description": "Accuracy of linear decreasing curve",
@@ -128,24 +124,23 @@ DEFAULT_CONFIG ={
     "value": 100
   },
   "Leverage": {
-    "description": "",
-    "label": "High Risk, factor to multipy DefautlStake with to increase stake amount, risk of loosing everything",
+    "description": "High Risk, factor to multipy DefautlStake with to increase stake amount, risk of loosing everything",
+    "label": "factor to multipy DefautlStake with to increase stake amount",
     "value": 3
   },
   "BiasSymbols": {
-    "description": "",
+    "description": "Show sentiment for these symbols at the bottom",
     "label": "Show sentiment for these symbols at the bottom",
     "value": "BTC"
   },
   "BiasShowAll": {
     "value": "true",
     "description": "In the current sentiment section, whether to match strategy code (false) or to debug every bias (true)",
-    "label": "",
-    "type": configType.boolean
+    "label": "whether to match strategy code (false) or to debug every bias (true)"
   },
   "CheckProfitSeconds": {
-    "description": "",
-    "label": "",
+    "description": "CheckProfitSeconds",
+    "label": "CheckProfitSeconds",
     "value": 5
   },
   "MinutesPassedForReverseLogic": {
@@ -154,51 +149,49 @@ DEFAULT_CONFIG ={
     "value": 60
   },
   "ReverseTrendMACDShortWindow": {
-    "description": "",
-    "label": "",
+    "description": "ReverseTrendMACDShortWindow",
+    "label": "ReverseTrendMACDShortWindow",
     "value": 6
   },
   "ReverseTrendMACDLongWindow": {
-    "description": "",
-    "label": "",
+    "description": "ReverseTrendMACDLongWindow",
+    "label": "ReverseTrendMACDLongWindow",
       "value": 26
   },
   "ReverseTrendMACDSignalWindow": {
-    "description": "",
-    "label": "",
+    "description": "ReverseTrendMACDSignalWindow",
+    "label": "ReverseTrendMACDSignalWindow",
       "value": 9
   },
   "ReverseTrendBullishThresholdPct": {
-    "description": "",
-    "label": "",
+    "description": "ReverseTrendBullishThresholdPct",
+    "label": "ReverseTrendBullishThresholdPct",
       "value": 0.7
   },
     "ReverseTrendBullishPartialThresholdPct": {
-    "description": "",
-    "label": "",
+    "description": "ReverseTrendBullishPartialThresholdPct",
+    "label": "ReverseTrendBullishPartialThresholdPct",
         "value": 0.75
     },
     "ReverseTrendBearishThresholdPct": {
-    "description": "",
-    "label": "",
+    "description": "ReverseTrendBearishThresholdPct",
+    "label": "ReverseTrendBearishThresholdPct",
         "value": 0.7
     },
     "ReverseTrendBearishPartialThresholdPct": {
-    "description": "",
-    "label": "",
+    "description": "ReverseTrendBearishPartialThresholdPct",
+    "label": "ReverseTrendBearishPartialThresholdPct",
         "value": 0.75,
-        # "type": configType.percent1,
-        "type": configType.text,
-        "increment": 0.05,
+        "increment": 0.05
     },
     "ReverseTrendCandleDivisor": {
-      "description": "",
-      "label": "",
+      "description": "ReverseTrendCandleDivisor",
+      "label": "ReverseTrendCandleDivisor",
         "value": 3.0
     },
     "ReverseTrendLastTrendEntries": {
-    "description": "",
-    "label": "",
+    "description": "ReverseTrendLastTrendEntries",
+    "label": "ReverseTrendLastTrendEntries",
         "value": 3
     },
   "MaxReverseAttempts": { 
