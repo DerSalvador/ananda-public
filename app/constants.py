@@ -198,5 +198,12 @@ DEFAULT_CONFIG ={
     "description": "Reverse (sell and buy reverse direction) when stoploss reached or reverse conditions are met (linear decreasing current profit)",
     "label": "MaxReverseAttempts",
     "value": 3
+  },
+  "BannedMinutes": { 
+    "description": "Banned minutes after too many reverses",
+    "label": "BannedMinutes",
+    "value": 30
   }
+  
+  
 } 
