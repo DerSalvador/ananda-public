@@ -156,6 +156,11 @@ def _update_sentiment(symbol: str, updateRequest: BiasResponse):
     update_sentiment(symbol, updateRequest.bias)
     return {"status": "success", "message": "Sentiment updated"}
 
+async def _heartbeat():
+    while True:
+        logger.info(f"Heartbeat: {datetime.now().isoformat()}")
+        await asyncio.sleep(60)
+
 async def _cron_update_profit():
     while True:
         cron_update_profit()
@@ -165,6 +170,7 @@ async def _cron_update_profit():
 @app.on_event("startup")
 async def _startup():
     asyncio.create_task(_cron_update_profit())
+    asyncio.create_task(_heartbeat())
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=9000, reload=True)
