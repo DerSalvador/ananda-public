@@ -148,7 +148,6 @@ def _get_profit(symbol: str):
 def custom_exit(symbol: str, full: bool = False):
     # TODO: Implement custom exit logic
     return reverse_trend(symbol, full)
-    return { "exit": False, "position": current_position(symbol) }
 
 @app.post("/sentiment/{symbol}")
 def _update_sentiment(symbol: str, updateRequest: BiasResponse):
