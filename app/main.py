@@ -73,11 +73,15 @@ def post_sentiment(request: BiasRequest, all_sentiments: bool = False) -> dict[s
         if reverse_trend_data:
             if reverse_trend_data["final"]["value"]:
                 if sentiments["final"]["bias"] == BiasType.SHORT and reverse_trend_data["final"]["is_short"]:
+                    logger.info(f"Reverse trend logic applied, going long. Bias logic overridden: {reverse_trend_data['final']['reason']}")
                     sentiments["final"]["bias"] = BiasType.LONG
                     sentiments["final"]["reason"] = f"Reverse trend logic applied, going long. Bias logic overridden: {reverse_trend_data['final']['reason']}"
                 elif sentiments["final"]["bias"] == BiasType.LONG and not reverse_trend_data["final"]["is_short"]:
+                    logger.info(f"Reverse trend logic applied, going short. Bias logic overridden: {reverse_trend_data['final']['reason']}")
                     sentiments["final"]["bias"] = BiasType.SHORT
                     sentiments["final"]["reason"] = f"Reverse trend logic applied, going short. Bias logic overridden: {reverse_trend_data['final']['reason']}"
+            else:
+                logger.info(f"Bias logic unchanged: Reverse trend - {reverse_trend_data['final']['reason']}")
     except Exception as e:
         logger.error(f"Error in reverse_trend: {e}")
 
