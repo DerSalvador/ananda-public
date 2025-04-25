@@ -133,7 +133,7 @@
 
           container.appendChild(card);
 
-          // showProfitChart(symbol, chartContainer);
+          showProfitChart(symbol, chartContainer);
           fetchCustomExit(symbol);
         }
       } catch (err) {
@@ -185,71 +185,71 @@
       await fetchSentiments();
     }
 
-    // async function showProfitChart(symbol, container) {
-    //   try {
-    //     const response = await fetch(`/profit/${symbol}`);
-    //     const data = await response.json();
+    async function showProfitChart(symbol, container) {
+      try {
+        const response = await fetch(`/profit/${symbol}`);
+        const data = await response.json();
 
-    //     const profits = data.map(item => item.profit);
-    //     const timestamps = data.map(item =>
-    //       new Date(item.timestamp * 1000).toLocaleTimeString([], {
-    //         hour: '2-digit',
-    //         minute: '2-digit',
-    //         second: '2-digit'
-    //       })
-    //     );
-    //     const isShorts = data.map(item => item.is_short);
+        const profits = data.map(item => item.profit);
+        const timestamps = data.map(item =>
+          new Date(item.timestamp * 1000).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+          })
+        );
+        const isShorts = data.map(item => item.is_short);
 
-    //     const oldCanvas = container.querySelector('canvas');
-    //     if (oldCanvas) oldCanvas.remove();
+        const oldCanvas = container.querySelector('canvas');
+        if (oldCanvas) oldCanvas.remove();
 
-    //     const canvas = document.createElement('canvas');
-    //     container.appendChild(canvas);
+        const canvas = document.createElement('canvas');
+        container.appendChild(canvas);
 
-    //     new Chart(canvas.getContext('2d'), {
-    //       type: 'line',
-    //       data: {
-    //         labels: timestamps,
-    //         datasets: [{
-    //           label: `${symbol} Profit`,
-    //           data: profits,
-    //           borderColor: isShorts[0] ? 'red' : 'green',
-    //           backgroundColor: 'rgba(0,0,0,0.05)',
-    //           tension: 0.3,
-    //           fill: true,
-    //         }]
-    //       },
-    //       options: {
-    //         responsive: true,
-    //         plugins: {
-    //           title: {
-    //             display: true,
-    //             text: `Profit History (${isShorts[0] ? 'Short' : 'Long'})`
-    //           },
-    //           legend: {
-    //             display: false
-    //           }
-    //         },
-    //         scales: {
-    //           y: {
-    //             title: {
-    //               display: true,
-    //               text: 'Profit'
-    //             }
-    //           },
-    //           x: {
-    //             title: {
-    //               display: true,
-    //               text: 'Time'
-    //             }
-    //           }
-    //         }
-    //       }
-    //     });
-    //   } catch (err) {
-    //     console.error(err);
-    //   }
-    // }
+        new Chart(canvas.getContext('2d'), {
+          type: 'line',
+          data: {
+            labels: timestamps,
+            datasets: [{
+              label: `${symbol} Profit`,
+              data: profits,
+              borderColor: isShorts[0] ? 'red' : 'green',
+              backgroundColor: 'rgba(0,0,0,0.05)',
+              tension: 0.3,
+              fill: true,
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              title: {
+                display: true,
+                text: `Profit History (${isShorts[0] ? 'Short' : 'Long'})`
+              },
+              legend: {
+                display: false
+              }
+            },
+            scales: {
+              y: {
+                title: {
+                  display: true,
+                  text: 'Profit'
+                }
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: 'Time'
+                }
+              }
+            }
+          }
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
   </script>
   <script>
     function renderConfigInput(config) {
