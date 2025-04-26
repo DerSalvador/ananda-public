@@ -71,7 +71,7 @@ jobs:
 
     - name: Tag GCP
       id: gcptag
-      run: docker tag ghcr.io/${{ env.REPO_NAME }}/bias:${{ steps.config.outputs.tag }} europe-west1-docker.pkg.dev/gcp-nuke/gcp-nuke/freqtradeorg/freqtrade/bias::${{ steps.config.outputs.tag }}
+      run: docker tag ghcr.io/${{ env.REPO_NAME }}/bias:${{ steps.config.outputs.tag }} europe-west1-docker.pkg.dev/gcp-nuke/gcp-nuke/freqtradeorg/freqtrade/bias:${{ steps.config.outputs.tag }}
 
     - name: Build and push for multiple architectures
       uses: docker/build-push-action@v4
