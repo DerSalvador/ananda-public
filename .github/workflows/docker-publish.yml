@@ -65,14 +65,6 @@ jobs:
         echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
         echo "tag=$TAG" >> $GITHUB_OUTPUT
 
-    - name: login GCP
-      id: gcp
-      run: echo ya29.a0AZYkNZgQe6LBXp9Eb2d-IuhKb_8TRLu_Ljyzrt6hLbzjUoI2QZmcQPHafJKMyRg0xp_yTlgu_Robxi5siUjOJGrl0kvFGOnuGdoYI5IP_N4XGSfyv94Bweu9aYhGYLXlCL4NmEn9EtiKO_VztbWxTy7zVlYNZDMkqGCJFNriZpQxr86OaCgYKAcYSARASFQHGX2Mi7ODaWIWMy4rwfOfaV0yteA0183 | docker login -u oauth2accesstoken --password-stdin https://gcr.io
-
-    - name: Tag GCP
-      id: gcptag
-      run: docker tag ghcr.io/${{ env.REPO_NAME }}/bias:${{ steps.config.outputs.tag }} europe-west1-docker.pkg.dev/gcp-nuke/gcp-nuke/freqtradeorg/freqtrade/bias:${{ steps.config.outputs.tag }}
-
     - name: Build and push for multiple architectures
       uses: docker/build-push-action@v4
       with:
@@ -82,5 +74,22 @@ jobs:
         tags: |
           ghcr.io/${{ env.REPO_NAME }}/bias:v1.${{ github.run_number }}_${{ env.SHORT_SHA }}${{ steps.config.outputs.develop }}
           ghcr.io/${{ env.REPO_NAME }}/bias:${{ steps.config.outputs.tag }}
+          europe-west1-docker.pkg.dev/gcp-nuke/gcp-nuke/freqtradeorg/freqtrade/bias:${{ steps.config.outputs.tag }}
+
+    - name: login GCP
+      id: gcp
+      run: echo ya29.a0AZYkNZgQe6LBXp9Eb2d-IuhKb_8TRLu_Ljyzrt6hLbzjUoI2QZmcQPHafJKMyRg0xp_yTlgu_Robxi5siUjOJGrl0kvFGOnuGdoYI5IP_N4XGSfyv94Bweu9aYhGYLXlCL4NmEn9EtiKO_VztbWxTy7zVlYNZDMkqGCJFNriZpQxr86OaCgYKAcYSARASFQHGX2Mi7ODaWIWMy4rwfOfaV0yteA0183 | docker login -u oauth2accesstoken --password-stdin https://gcr.io
+
+    - name: Tag GCP
+      id: gcptag
+      run: docker tag ghcr.io/${{ env.REPO_NAME }}/bias:${{ steps.config.outputs.tag }} europe-west1-docker.pkg.dev/gcp-nuke/gcp-nuke/freqtradeorg/freqtrade/bias:${{ steps.config.outputs.tag }}
+
+    - name: Push to GCP
+      uses: docker/build-push-action@v4
+      with:
+        context: app
+        push: true
+        platforms: linux/amd64,linux/arm64
+        tags: |
           europe-west1-docker.pkg.dev/gcp-nuke/gcp-nuke/freqtradeorg/freqtrade/bias:${{ steps.config.outputs.tag }}
           
