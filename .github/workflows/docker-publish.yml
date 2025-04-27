@@ -74,7 +74,6 @@ jobs:
         tags: |
           ghcr.io/${{ env.REPO_NAME }}/bias:v1.${{ github.run_number }}_${{ env.SHORT_SHA }}${{ steps.config.outputs.develop }}
           ghcr.io/${{ env.REPO_NAME }}/bias:${{ steps.config.outputs.tag }}
-          # europe-west1-docker.pkg.dev/gcp-nuke/gcp-nuke/freqtradeorg/freqtrade/bias:${{ steps.config.outputs.tag }}
 
     - name: Tag and push GCP
       id: gcptag
