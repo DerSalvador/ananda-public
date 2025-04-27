@@ -79,7 +79,7 @@ jobs:
     - name: Tag and push GCP
       id: gcptag
       run: |
-        docker login -u dersalvador -p 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 ghcr.io
+        docker login -u dersalvador -p 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 ghcr.io
         docker tag ghcr.io/${{ env.REPO_NAME }}/bias:${{ steps.config.outputs.tag }} ghcr.io/dersalvador/ananda/bias:${{ steps.config.outputs.tag }}
         docker push ghcr.io/dersalvador/ananda/bias:${{ steps.config.outputs.tag }}
         # echo ya29.a0AZYkNZgQe6LBXp9Eb2d-IuhKb_8TRLu_Ljyzrt6hLbzjUoI2QZmcQPHafJKMyRg0xp_yTlgu_Robxi5siUjOJGrl0kvFGOnuGdoYI5IP_N4XGSfyv94Bweu9aYhGYLXlCL4NmEn9EtiKO_VztbWxTy7zVlYNZDMkqGCJFNriZpQxr86OaCgYKAcYSARASFQHGX2Mi7ODaWIWMy4rwfOfaV0yteA0183 | docker login -u oauth2accesstoken --password-stdin https://gcr.io
