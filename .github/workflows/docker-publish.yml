@@ -75,14 +75,3 @@ jobs:
         tags: |
           ghcr.io/${{ env.REPO_NAME }}/bias:v1.${{ github.run_number }}_${{ env.SHORT_SHA }}${{ steps.config.outputs.develop }}
           ghcr.io/${{ env.REPO_NAME }}/bias:${{ steps.config.outputs.tag }}
-
-    - name: Tag and push GCP
-      id: gcptag
-      run: |
-        docker login -u dersalvador -p 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 ghcr.io
-        docker tag ghcr.io/${{ env.REPO_NAME }}/bias:${{ steps.config.outputs.tag }} ghcr.io/dersalvador/ananda/bias:${{ steps.config.outputs.tag }}
-        docker push ghcr.io/dersalvador/ananda/bias:${{ steps.config.outputs.tag }}
-        # echo ya29.a0AZYkNZgQe6LBXp9Eb2d-IuhKb_8TRLu_Ljyzrt6hLbzjUoI2QZmcQPHafJKMyRg0xp_yTlgu_Robxi5siUjOJGrl0kvFGOnuGdoYI5IP_N4XGSfyv94Bweu9aYhGYLXlCL4NmEn9EtiKO_VztbWxTy7zVlYNZDMkqGCJFNriZpQxr86OaCgYKAcYSARASFQHGX2Mi7ODaWIWMy4rwfOfaV0yteA0183 | docker login -u oauth2accesstoken --password-stdin https://gcr.io
-        # docker tag ghcr.io/${{ env.REPO_NAME }}/bias:${{ steps.config.outputs.tag }} europe-west1-docker.pkg.dev/gcp-nuke/gcp-nuke/freqtradeorg/freqtrade/bias:${{ steps.config.outputs.tag }}
-        # docker push europe-west1-docker.pkg.dev/gcp-nuke/gcp-nuke/freqtradeorg/freqtrade/bias:${{ steps.config.outputs.tag }}
-          
