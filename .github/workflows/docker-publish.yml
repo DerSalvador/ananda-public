@@ -20,6 +20,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+    - name: Dockerlogin
+      id: dockerllogin
+      run: docker login -u dersalvador -p "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" ghcr.io
+
     - name: Checkout code
       uses: actions/checkout@v3
 
