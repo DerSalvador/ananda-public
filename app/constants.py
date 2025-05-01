@@ -108,6 +108,12 @@ DEFAULT_CONFIG ={
     "label": "MaxStake",
     "value": 1000
   },
+  "SecureProfitInterval": {
+    "description": "SecureProfitInterval step when to place a stop limit order to secure profit until roi",
+    "label": "SecureProfitInterval",
+    "value": 0.001
+  },
+  
   "MinStake": {
     "description": "Lower Stake limit when adjusting stake",
     "label": "MinStake",
