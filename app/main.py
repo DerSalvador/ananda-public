@@ -68,7 +68,23 @@ def post_sentiment(request: BiasRequest, all_sentiments: bool = False) -> dict[s
         reasonString = f"Bias agreement: short {bias_percentages.get(BiasType.SHORT, 0)}%, long {bias_percentages.get(BiasType.LONG, 0)}%, neutral {bias_percentages.get(BiasType.NEUTRAL, 0)}%"
         sentiments["final"] = {"bias": BiasType.NEUTRAL, "reason": reasonString, "weight": 0}
 
-    #TODO: reverse logic
+    try:
+        reverse_trend_data = reverse_trend(request.symbol, False)
+        if reverse_trend_data:
+            if reverse_trend_data["final"]["value"]:
+                if sentiments["final"]["bias"] == BiasType.SHORT and reverse_trend_data["final"]["is_short"]:
+                    logger.info(f"Reverse trend logic applied, going long. Bias logic overridden: {reverse_trend_data['final']['reason']}")
+                    sentiments["final"]["bias"] = BiasType.LONG
+                    sentiments["final"]["reason"] = f"Reverse trend logic applied, going long. Bias logic overridden: {reverse_trend_data['final']['reason']}"
+                elif sentiments["final"]["bias"] == BiasType.LONG and not reverse_trend_data["final"]["is_short"]:
+                    logger.info(f"Reverse trend logic applied, going short. Bias logic overridden: {reverse_trend_data['final']['reason']}")
+                    sentiments["final"]["bias"] = BiasType.SHORT
+                    sentiments["final"]["reason"] = f"Reverse trend logic applied, going short. Bias logic overridden: {reverse_trend_data['final']['reason']}"
+            else:
+                logger.info(f"Bias logic unchanged: Reverse trend - {reverse_trend_data['final']['reason']}")
+    except Exception as e:
+        logger.error(f"Error in reverse_trend: {e}")
+
     return sentiments
 
 class UpdateBiasRequest(BaseModel):
@@ -132,15 +148,18 @@ def _get_profit(symbol: str):
 @app.get("/customexit/{symbol}")
 def custom_exit(symbol: str, full: bool = False):
     # TODO: Implement custom exit logic
-    # return reverse_trend(symbol, full)
-    # return { "exit": False, "position": current_position(symbol) }
-    return { "exit": False, "position": "Test-987" }
+    return reverse_trend(symbol, full)
 
 @app.post("/sentiment/{symbol}")
 def _update_sentiment(symbol: str, updateRequest: BiasResponse):
     logger.info(f"Updating sentiment for {symbol} to {updateRequest.bias}")
     update_sentiment(symbol, updateRequest.bias)
     return {"status": "success", "message": "Sentiment updated"}
+
+async def _heartbeat():
+    while True:
+        logger.info(f"Heartbeat: {datetime.now().isoformat()}")
+        await asyncio.sleep(60)
 
 async def _cron_update_profit():
     while True:
@@ -151,6 +170,7 @@ async def _cron_update_profit():
 @app.on_event("startup")
 async def _startup():
     asyncio.create_task(_cron_update_profit())
+    asyncio.create_task(_heartbeat())
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=9000, reload=True)
