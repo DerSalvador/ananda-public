@@ -1,5 +1,6 @@
 import json
 import os
+from time import time
 import requests
 import pandas as pd
 
@@ -9,6 +10,7 @@ from utils import TimeBasedDeque, get_logger
 logger = get_logger()
 
 profit_queue = {}
+current_reversal_state = {}
 
 def cron_update_profit():
     status_endpoint = "/api/v1/status"
@@ -49,6 +51,8 @@ def negative_percent(profits, symbol: str):
     reverse_trend_negative_percent = float(get_config("ReverseTrendShouldBeNegativePercent", 100))
     negative_count = sum(1 for profit in profits if profit.get("profit", 0) < 0)
     total_count = len(profits)
+    if total_count == 0:
+        return f"No profits data for {symbol}", False
     negative_percent = (negative_count / total_count) * 100
     if negative_percent >= reverse_trend_negative_percent:
         return f"{negative_percent:.2f}% >= {reverse_trend_negative_percent}% for {symbol}", True
@@ -218,9 +222,59 @@ def reverse_trend(symbol: str, full=False):
     if response["min_count"]["value"] and response["negative_percent"]["value"] and response["first_greater_than_last"]["value"] and response["linear_decreasing"]["value"]:
         response["final"]["value"] = True
         response["final"]["reason"] = "All checks passed"
+        updateBanned(symbol, True)
     else:
         response["final"]["reason"] = "One or more checks failed"
+        updateBanned(symbol, False)
     return response
+
+def updateBanned(symbol: str, state: bool):
+    if symbol not in current_reversal_state:
+        current_reversal_state[symbol] = {}
+    current_state = current_reversal_state[symbol].get("currentstate", False)
+    # state hasn't changed
+    if current_state == state:
+        return
+
+
+    current_count = current_reversal_state[symbol].get("count", 0)
+    if current_state == True:
+        current_count += 1
+
+    ban_after = int(get_config("MaxReverseAttempts", 3))
+    ban_time = int(get_config("ReverseTrendBanSeconds", 60*20))
+    banned = False
+
+    already_banned = current_reversal_state[symbol].get("banned", False)
+    if already_banned:
+        banned_timestamp = current_reversal_state[symbol].get("timestamp", 0)
+        if int(time()) - banned_timestamp < ban_time:
+            return True
+        else:
+            banned = False
+
+    if current_count >= ban_after:
+        banned = True
+        current_count = 0
+        logger.info(f"Banning {symbol} for {ban_time} seconds")
+
+    current_reversal_state[symbol] = {
+            "currentstate": state,
+            "count": current_count,
+            "banned": banned,
+            "timestamp": int(time()),
+    } 
+
+def isBanned(symbol: str):
+    if symbol not in current_reversal_state:
+        return False
+    banned = current_reversal_state[symbol].get("banned", False)
+    if banned:
+        banned_timestamp = current_reversal_state[symbol].get("timestamp", 0)
+        ban_time = int(get_config("ReverseTrendBanSeconds", 60*20))
+        if int(time()) - banned_timestamp < ban_time:
+            return True
+    return False
 
 def get_profits(symbol: str):
     if symbol not in profit_queue:

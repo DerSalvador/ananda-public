@@ -203,5 +203,10 @@ DEFAULT_CONFIG ={
     "description": "Reverse (sell and buy reverse direction) when stoploss reached or reverse conditions are met (linear decreasing current profit)",
     "label": "Max Reverse Trade Count for a pair, when reached pair will be blacklisted",
     "value": 3
-  }
+  },
+    "ReverseTrendBanSeconds": {
+        "description": "Ban pair for n seconds after max reverse attempts reached",
+        "label": "Max reverse ban time (seconds)",
+        "value": 60*20
+    },
 } 

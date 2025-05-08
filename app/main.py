@@ -1,6 +1,6 @@
 import requests
 from dotenv import load_dotenv
-from reversetrend import cron_update_profit, get_profits, reverse_trend
+from reversetrend import cron_update_profit, get_profits, isBanned, reverse_trend
 load_dotenv()
 
 from db import update_sentiment
@@ -84,6 +84,11 @@ def post_sentiment(request: BiasRequest, all_sentiments: bool = False) -> dict[s
                 logger.info(f"Bias logic unchanged: Reverse trend - {reverse_trend_data['final']['reason']}")
     except Exception as e:
         logger.error(f"Error in reverse_trend: {e}")
+
+    if isBanned(request.symbol):
+        sentiments["final"]["bias"] = BiasType.NEUTRAL
+        sentiments["final"]["reason"] = "Symbol is banned"
+        logger.info(f"Symbol {request.symbol} is banned, setting bias to NEUTRAL")
 
     return sentiments
 
