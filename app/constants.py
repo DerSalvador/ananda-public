@@ -114,7 +114,7 @@ DEFAULT_CONFIG ={
     "value": 0.001
   },
   "StoplimitSlippage": {
-    "description": "The limit ratio calculated from triggerprice to trigger secure profit limit order, must be greater market price",
+    "description": "The limit ratio calculated from triggerprice to trigger secure profit limit order, stop limit price must be less than market price",
     "label": "StoplimitSlippage",
     "value": 0.02
   },
