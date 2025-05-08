@@ -113,7 +113,12 @@ DEFAULT_CONFIG ={
     "label": "SecureProfitInterval",
     "value": 0.001
   },
-  
+  "StoplimitSlippage": {
+    "description": "The limit ratio calculated from triggerprice to trigger secure profit limit order, must be greater market price",
+    "label": "StoplimitSlippage",
+    "value": 0.02
+  },
+
   "MinStake": {
     "description": "Lower Stake limit when adjusting stake",
     "label": "MinStake",
