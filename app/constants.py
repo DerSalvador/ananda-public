@@ -17,11 +17,11 @@ DEFAULT_CONFIG ={
     "label": "ReverseTrendCheckBackSeconds",
     "value": 1800
   },
-  "ReverseTrendCheckMinCount": {
-    "description": "Check current profits array last elements",
-    "label": "ReverseTrendCheckMinCount",
-    "value": 120
-  },
+  # "ReverseTrendCheckMinCount": {
+  #   "description": "Check current profits array last elements",
+  #   "label": "ReverseTrendCheckMinCount",
+  #   "value": 120
+  # },
   "SantimentThreshold": {
     "description": "Sentiment threshold to determine signal, over 0.25 = long, less -0.25 = short",
     "label": "SantimentThreshold",
@@ -108,11 +108,11 @@ DEFAULT_CONFIG ={
     "label": "MaxStake",
     "value": 1000
   },
-  "SecureProfitInterval": {
-    "description": "SecureProfitInterval step when to place a stop limit order to secure profit until roi",
-    "label": "SecureProfitInterval",
-    "value": 0.001
-  },
+  # "SecureProfitInterval": {
+  #   "description": "SecureProfitInterval step when to place a stop limit order to secure profit until roi",
+  #   "label": "SecureProfitInterval",
+  #   "value": 0.001
+  # },
   "StoplimitSlippage": {
     "description": "The limit ratio calculated from triggerprice to trigger secure profit limit order, stop limit price must be less than market price",
     "label": "StoplimitSlippage",
