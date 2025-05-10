@@ -14,8 +14,9 @@ from enum import Enum
 
 logger = get_logger()
 CONFIG_PATH = os.getenv("CONFIG_PATH", "/tmp")
+BIAS_FILEPATH = f"{CONFIG_PATH}/biasdb.json"
 
-biasdb = TinyDB(f"{CONFIG_PATH}/biasdb.json")
+biasdb = TinyDB(BIAS_FILEPATH)
 # Entries of type {'name': 'CoinGeckoBTC', 'active': True} def init():
 
 def get_biases():

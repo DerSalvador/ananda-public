@@ -250,6 +250,48 @@
         console.error(err);
       }
     }
+    async function exportConfig() {
+      try {
+        const response = await fetch('/export');
+        if (!response.ok) throw new Error('Failed to export config');
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'config.json';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error('Error exporting config:', err);
+        alert('Failed to export config');
+      }
+    }
+
+    async function importConfig(file) {
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await fetch('/import', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+        if (result.status !== 'success') {
+          throw new Error(result.message);
+        }
+
+        alert('Config imported successfully!');
+        // Optionally, refresh the page or update the UI to reflect new config
+      } catch (err) {
+        console.error('Error importing config:', err);
+        alert('Failed to import config');
+      }
+    }
   </script>
   <script>
     function renderConfigInput(config) {
@@ -352,7 +394,10 @@
           </div>
         </div>
       {% endfor %}
-      <div class="flex justify-end mt-4">
+      <div class="flex justify-end mt-4 space-x-2">
+        <button type="button" onclick="exportConfig()" class="bg-yellow-500 text-white p-2 rounded w-full sm:w-auto">Export</button>
+        <input type="file" id="import-file" class="hidden" onchange="importConfig(this.files[0])">
+        <button type="button" onclick="document.getElementById('import-file').click()" class="bg-purple-500 text-white p-2 rounded w-full sm:w-auto">Import</button>
         <button type="submit" class="bg-blue-500 text-white p-2 rounded w-full sm:w-auto">Submit All</button>
       </div>
     </form>
