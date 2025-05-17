@@ -214,7 +214,12 @@ DEFAULT_CONFIG ={
     "description": "Banned minutes after too many reverses",
     "label": "BannedMinutes",
     "value": 30
-  }
+  },
   
   
+    "ReverseTrendBanSeconds": {
+        "description": "Ban pair for n seconds after max reverse attempts reached",
+        "label": "Max reverse ban time (seconds)",
+        "value": 60*20
+    },
 } 

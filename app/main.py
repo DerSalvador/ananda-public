@@ -1,18 +1,19 @@
+import json
 import requests
 from dotenv import load_dotenv
-# from reversetrend import cron_update_profit, get_profits, reverse_trend
+from reversetrend import cron_update_profit, get_profits, isBanned, reverse_trend
 load_dotenv()
 
 from db import update_sentiment
-from bias import get_all_configs, get_biases, get_config, getInterfaces, update_bias, update_config
+from bias import BIAS_FILEPATH, get_all_configs, get_biases, get_config, getInterfaces, update_bias, update_config
 from pydantic import BaseModel
 from bias import BiasRequest, BiasResponse, BiasType
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from utils import get_logger
 from concurrent.futures import ThreadPoolExecutor
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Request, UploadFile, File, Form
+from fastapi.responses import HTMLResponse, FileResponse
 import asyncio
 
 import uvicorn
@@ -85,6 +86,11 @@ def post_sentiment(request: BiasRequest, all_sentiments: bool = False) -> dict[s
     except Exception as e:
         logger.error(f"Error in reverse_trend: {e}")
 
+    if isBanned(request.symbol):
+        sentiments["final"]["bias"] = BiasType.NEUTRAL
+        sentiments["final"]["reason"] = "Symbol is banned"
+        logger.info(f"Symbol {request.symbol} is banned, setting bias to NEUTRAL")
+
     return sentiments
 
 class UpdateBiasRequest(BaseModel):
@@ -131,6 +137,18 @@ def _update_bias(data: UpdateBiasRequest):
 def _get_configs():
     return get_all_configs()
 
+@app.get("/export")
+def _config_export():
+    return FileResponse(BIAS_FILEPATH, media_type='application/json', filename="configs.json")
+
+@app.post("/import")
+async def import_file(file: UploadFile = File(...)):
+    with open(BIAS_FILEPATH, "wb") as f:
+        content = await file.read()
+        f.write(content)
+    return {"status": "success", "message": "File imported"}
+
+
 class UpdateConfigRequest(BaseModel):
     name: str
     value: str
@@ -162,6 +180,7 @@ async def _heartbeat():
         await asyncio.sleep(60)
 
 async def _cron_update_profit():
+    return
     while True:
         # cron_update_profit()
         checkProfitSeconds = int(get_config("CheckProfitSeconds", 5))
