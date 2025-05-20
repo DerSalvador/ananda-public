@@ -314,20 +314,20 @@
             </div>
           `;
         // Add other types here as needed
-        case "boolean":
-          return `
-            <label class="inline-flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="config-input-${config.name}"
-                name="${config.name}"
-                value="true"
-                ${config.value === "true" ? "checked" : ""}
-                onchange="this.value = this.checked ? 'true' : 'false'"
-                class="form-checkbox h-8 w-5 text-blue-600"
-              >
-            </label>
-          `;
+        // case "boolean":
+        //   return `
+        //     <label class="inline-flex items-center space-x-2">
+        //       <input
+        //         type="checkbox"
+        //         id="config-input-${config.name}"
+        //         name="${config.name}"
+        //         value="true"
+        //         ${config.value === "true" ? "checked" : ""}
+        //         onchange="this.value = this.checked ? 'true' : 'false'"
+        //         class="form-checkbox h-8 w-5 text-blue-600"
+        //       >
+        //     </label>
+        //   `;
         case "percent1":
           return `
             <div class="flex items-center space-x-4 w-full sm:w-1/2">
