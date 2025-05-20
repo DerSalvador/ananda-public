@@ -166,7 +166,7 @@ def init():
         table = biasdb.table("configs")
         entry = table.get(Query().name == name)
         if not entry:
-            table.insert({"name": name, "value": value.get("value")})
+            table.insert({**value, "name": name})
         else:
             table.update({**value, "value": entry.get("value", value.get("value"))}, Query().name == name)
 init()
