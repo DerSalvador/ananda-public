@@ -210,7 +210,6 @@ DEFAULT_CONFIG ={
     "label": "MaxReverseAttempts",
     "value": 3
   },
-  }
     "ReverseTrendBanSeconds": {
         "description": "Ban pair for n seconds after max reverse attempts reached",
         "label": "Max reverse ban time (seconds)",
