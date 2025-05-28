@@ -27,10 +27,10 @@ class GreedAndFear(BiasInterface):
         logger.info(f"Neutral count: {neutral_count}")
         total = len(classifications)
         
-        if greed_count / total >= 0.8:
+        if greed_count / total >= 0.6:
             ret = BiasType.LONG
             reason = f"Greed count: {greed_count}, Fear count: {fear_count}, Neutral count: {neutral_count}, Percentage: {greed_count / total:.2%}"
-        elif fear_count / total >= 0.8:
+        elif fear_count / total >= 0.6:
             ret = BiasType.SHORT
             reason = f"Greed count: {greed_count}, Fear count: {fear_count}, Neutral count: {neutral_count}, Percentage: {fear_count / total:.2%}"
         else:
