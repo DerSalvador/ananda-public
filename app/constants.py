@@ -27,6 +27,16 @@ DEFAULT_CONFIG ={
     "label": "SantimentThreshold",
     "value": 0.25
   },
+    "SantimentHourlyDaysAgo": {
+        "description": "Santiment Hourly, get data from n days ago",
+        "label": "Santiment Hourly days ago",
+        "value": 0
+    },
+    "SantimentHourlyHoursToLookBack": {
+        "description": "Santiment Hourly, look back n hours",
+        "label": "Santiment Hourly hours to look back",
+        "value": 7
+    },
   "SantimentFromTimeDaysAgo": {
     "description": "Santiment from day to determine signal. (7d minimum)",
     "label": "SantimentFromTimeDaysAgo",
