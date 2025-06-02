@@ -81,12 +81,12 @@ DEFAULT_CONFIG ={
   "WinrateHigh": {
     "description": "Threshold for adjusting stoploss and stake",
     "label": "WinrateHigh",
-    "value": 0.7
+    "value": 0.8
   },
   "WinrateLow": {
     "description": "Threshold for adjusting stoploss and stake",
     "label": "WinrateLow",
-    "value": 0.3
+    "value": 0.6
   },
   "StoplossWinrateHigh": {
     "description": "Adjustment to stoploss according to winrate. If winrate is higher Winratehigh tighten stoploss",
