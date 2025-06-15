@@ -14,7 +14,7 @@ DEFAULT_CONFIG ={
   },  
   "StoplossWinrateNeutral": {
     "description": "Stoploss used in custom_exit to exit trade, custom_stoploss in strategy returns always -0.99",
-    "label": "1. StoplossWinrateNeutral (Default Stoploss) basis for ROI as well",
+    "label": "1. StoplossWinrateNeutral (Default Stoploss), also ROI=Stoploss+0.005",
     "value": -0.12
   },  
   "GreedAndFearLimit": {
