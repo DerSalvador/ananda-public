@@ -7,6 +7,11 @@ class configType(str, Enum):
     percent1 = "percent1"
 
 DEFAULT_CONFIG ={
+  "TradeAgeInMinutes": {
+    "description": "Past Minutes of last trade to check if made profit, if yes continue with same direction, if no reverse trade",
+    "label": "0. TradeAgeInMinutes (Default Stoploss) basis for ROI as well",
+    "value": -0.12
+  },  
   "StoplossWinrateNeutral": {
     "description": "Stoploss used in custom_exit to exit trade, custom_stoploss in strategy returns always -0.99",
     "label": "1. StoplossWinrateNeutral (Default Stoploss) basis for ROI as well",
