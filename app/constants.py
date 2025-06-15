@@ -7,6 +7,11 @@ class configType(str, Enum):
     percent1 = "percent1"
 
 DEFAULT_CONFIG ={
+  "StoplossWinrateNeutral": {
+    "description": "Stoploss used in custom_exit to exit trade, custom_stoploss in strategy returns always -0.99",
+    "label": "1. StoplossWinrateNeutral (Default Stoploss) basis for ROI as well",
+    "value": -0.12
+  },  
   "GreedAndFearLimit": {
     "description": "No of entries to fetch from the API for Greed and Fear",
     "label": "Greed and Fear Limit",
@@ -27,21 +32,21 @@ DEFAULT_CONFIG ={
     "label": "SantimentThreshold",
     "value": 0.25
   },
-  "SantimentFromTimeDaysAgo": {
-    "description": "Santiment from day to determine signal. (7d minimum)",
-    "label": "SantimentFromTimeDaysAgo",
-    "value": 7
-  },
-  "SantimentToTimeDaysAgo": {
-    "description": "Santiment to day (0=today)",
-    "label": "SantimentToTimeDaysAgo",
-    "value": 0
-  },
-  "ReturnOnInvest": {
-    "description": "Initial ROI for custom_exit",
-    "label": "ReturnOnInvest",
-    "value": 0.12
-  },
+  # "SantimentFromTimeDaysAgo": {
+  #   "description": "Santiment from day to determine signal. (7d minimum)",
+  #   "label": "SantimentFromTimeDaysAgo",
+  #   "value": 7
+  # },
+  # "SantimentToTimeDaysAgo": {
+  #   "description": "Santiment to day (0=today)",
+  #   "label": "SantimentToTimeDaysAgo",
+  #   "value": 0
+  # },
+  # "ReturnOnInvest": {
+  #   "description": "Initial ROI for custom_exit",
+  #   "label": "ReturnOnInvest",
+  #   "value": 0.12
+  # },
   "BiasWeightPaid": {
     "description": "Bias importance weight when calculating final bias for free endpoints, greater 1 are more important",
     "label": "BiasWeightPaid",
@@ -61,7 +66,7 @@ DEFAULT_CONFIG ={
   "ReverseTrendShouldBeNegativePercent": {
     "description": "Check if all profits in array are negative to determine reverse entry (sell and buy reverse)",
     "label": "ReverseTrendShouldBeNegativePercent",
-    "value": 90
+    "value": 100
   },
   "ReverseTrendCheckFirstGreater": {
     "description": "Check if first profit is greater than last profit to determine reverse entry (sell and buy reverse)",
@@ -98,11 +103,6 @@ DEFAULT_CONFIG ={
     "label": "StoplossWinrateLow",
     "value": -0.18
   },
-  "StoplossWinrateNeutral": {
-    "description": "Stoploss used in custom_exit to exit trade, custom_stoploss in strategy returns always -0.99",
-    "label": "StoplossWinrateNeutral",
-    "value": -0.12
-  },
   "MaxStake": {
     "description": "Upper Stake limit when adjusting stake",
     "label": "MaxStake",
@@ -113,11 +113,11 @@ DEFAULT_CONFIG ={
   #   "label": "SecureProfitInterval",
   #   "value": 0.001
   # },
-  "StoplimitSlippage": {
-    "description": "The limit ratio calculated from triggerprice to trigger secure profit limit order, stop limit price must be less than market price",
-    "label": "StoplimitSlippage",
-    "value": 0.02
-  },
+  # "StoplimitSlippage": {
+  #   "description": "The limit ratio calculated from triggerprice to trigger secure profit limit order, stop limit price must be less than market price",
+  #   "label": "StoplimitSlippage",
+  #   "value": 0.02
+  # },
 
   "MinStake": {
     "description": "Lower Stake limit when adjusting stake",
@@ -126,17 +126,17 @@ DEFAULT_CONFIG ={
   },
   "DefaultStake": {
     "description": "Used to return custom_stake_amout to freqtrade to fullfill trades",
-    "label": "DefaultStake",
+    "label": "2. DefaultStake",
     "value": 200
   },
   "StakeIncrementStep": {
     "description": "Used to adjust stake amount according to winrate or lost trade",
-    "label": "StakeIncrementStep",
-    "value": 100
+    "label": "3. StakeIncrementStep",
+    "value": 50
   },
   "Leverage": {
     "description": "High Risk, factor to multipy DefautlStake with to increase stake amount, risk of loosing everything",
-    "label": "Leverage",
+    "label": "4. Leverage",
     "value": 3
   },
   "BiasSymbols": {
@@ -149,77 +149,75 @@ DEFAULT_CONFIG ={
     "description": "In the current sentiment section, whether to match strategy code (false) or to debug every bias (true)",
     "label": "BiasShowAll"
   },
-  "CheckProfitSeconds": {
-    "description": "CheckProfitSeconds",
-    "label": "CheckProfitSeconds",
-    "value": 5
-  },
+  # "CheckProfitSeconds": {
+  #   "description": "CheckProfitSeconds",
+  #   "label": "CheckProfitSeconds",
+  #   "value": 5
+  # },
   "MinutesPassedForReverseLogic": {
     "description": "Check reversing trade after n minutes",
-    "label": "MinutesPassedForReverseLogic",
+    "label": "5. MinutesPassedForReverseLogic",
     "value": 60
   },
-  "ReverseTrendMACDShortWindow": {
-    "description": "ReverseTrendMACDShortWindow",
-    "label": "ReverseTrendMACDShortWindow",
-    "value": 6
-  },
-  "ReverseTrendMACDLongWindow": {
-    "description": "ReverseTrendMACDLongWindow",
-    "label": "ReverseTrendMACDLongWindow",
-      "value": 26
-  },
-  "ReverseTrendMACDSignalWindow": {
-    "description": "ReverseTrendMACDSignalWindow",
-    "label": "ReverseTrendMACDSignalWindow",
-      "value": 9
-  },
-  "ReverseTrendBullishThresholdPct": {
-    "description": "ReverseTrendBullishThresholdPct",
-    "label": "ReverseTrendBullishThresholdPct",
-      "value": 0.7
-  },
-    "ReverseTrendBullishPartialThresholdPct": {
-    "description": "ReverseTrendBullishPartialThresholdPct",
-    "label": "ReverseTrendBullishPartialThresholdPct",
-        "value": 0.75
-    },
-    "ReverseTrendBearishThresholdPct": {
-    "description": "ReverseTrendBearishThresholdPct",
-    "label": "ReverseTrendBearishThresholdPct",
-        "value": 0.7
-    },
-    "ReverseTrendBearishPartialThresholdPct": {
-    "description": "ReverseTrendBearishPartialThresholdPct",
-    "label": "ReverseTrendBearishPartialThresholdPct",
-        "value": 0.75,
-        "increment": 0.05
-    },
-    "ReverseTrendCandleDivisor": {
-      "description": "ReverseTrendCandleDivisor",
-      "label": "ReverseTrendCandleDivisor",
-        "value": 3.0
-    },
-    "ReverseTrendLastTrendEntries": {
-    "description": "ReverseTrendLastTrendEntries",
-    "label": "ReverseTrendLastTrendEntries",
-        "value": 3
-    },
+  # "ReverseTrendMACDShortWindow": {
+  #   "description": "ReverseTrendMACDShortWindow",
+  #   "label": "ReverseTrendMACDShortWindow",
+  #   "value": 6
+  # },
+  # "ReverseTrendMACDLongWindow": {
+  #   "description": "ReverseTrendMACDLongWindow",
+  #   "label": "ReverseTrendMACDLongWindow",
+  #     "value": 26
+  # },
+  # "ReverseTrendMACDSignalWindow": {
+  #   "description": "ReverseTrendMACDSignalWindow",
+  #   "label": "ReverseTrendMACDSignalWindow",
+  #     "value": 9
+  # },
+  # "ReverseTrendBullishThresholdPct": {
+  #   "description": "ReverseTrendBullishThresholdPct",
+  #   "label": "ReverseTrendBullishThresholdPct",
+  #     "value": 0.7
+  # },
+  #   "ReverseTrendBullishPartialThresholdPct": {
+  #   "description": "ReverseTrendBullishPartialThresholdPct",
+  #   "label": "ReverseTrendBullishPartialThresholdPct",
+  #       "value": 0.75
+  #   },
+  #   "ReverseTrendBearishThresholdPct": {
+  #   "description": "ReverseTrendBearishThresholdPct",
+  #   "label": "ReverseTrendBearishThresholdPct",
+  #       "value": 0.7
+  #   },
+    # "ReverseTrendBearishPartialThresholdPct": {
+    # "description": "ReverseTrendBearishPartialThresholdPct",
+    # "label": "ReverseTrendBearishPartialThresholdPct",
+    #     "value": 0.75,
+    #     "increment": 0.05
+    # },
+    # "ReverseTrendCandleDivisor": {
+    #   "description": "ReverseTrendCandleDivisor",
+    #   "label": "ReverseTrendCandleDivisor",
+    #     "value": 3.0
+    # },
+    # "ReverseTrendLastTrendEntries": {
+    # "description": "ReverseTrendLastTrendEntries",
+    # "label": "ReverseTrendLastTrendEntries",
+    #     "value": 3
+    # },
   "MaxReverseAttempts": { 
     "description": "Reverse (sell and buy reverse direction) when stoploss reached or reverse conditions are met (linear decreasing current profit)",
-    "label": "MaxReverseAttempts",
+    "label": "6. MaxReverseAttempts",
     "value": 3
   },
   "BannedMinutes": { 
     "description": "Banned minutes after too many reverses",
-    "label": "BannedMinutes",
+    "label": "7. BannedMinutes",
     "value": 30
-  },
-  
-  
-    "ReverseTrendBanSeconds": {
-        "description": "Ban pair for n seconds after max reverse attempts reached",
-        "label": "Max reverse ban time (seconds)",
-        "value": 60*20
-    },
+  }
+    # "ReverseTrendBanSeconds": {
+    #     "description": "Ban pair for n seconds after max reverse attempts reached",
+    #     "label": "Max reverse ban time (seconds)",
+    #     "value": 60*20
+    # },
 } 
