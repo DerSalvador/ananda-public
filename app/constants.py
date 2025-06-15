@@ -149,62 +149,62 @@ DEFAULT_CONFIG ={
     "description": "In the current sentiment section, whether to match strategy code (false) or to debug every bias (true)",
     "label": "BiasShowAll"
   },
-  # "CheckProfitSeconds": {
-  #   "description": "CheckProfitSeconds",
-  #   "label": "CheckProfitSeconds",
-  #   "value": 5
-  # },
+  "CheckProfitSeconds": {
+    "description": "CheckProfitSeconds",
+    "label": "CheckProfitSeconds",
+    "value": 5
+  },
   "MinutesPassedForReverseLogic": {
     "description": "Check reversing trade after n minutes",
     "label": "5. MinutesPassedForReverseLogic",
     "value": 60
   },
-  # "ReverseTrendMACDShortWindow": {
-  #   "description": "ReverseTrendMACDShortWindow",
-  #   "label": "ReverseTrendMACDShortWindow",
-  #   "value": 6
-  # },
-  # "ReverseTrendMACDLongWindow": {
-  #   "description": "ReverseTrendMACDLongWindow",
-  #   "label": "ReverseTrendMACDLongWindow",
-  #     "value": 26
-  # },
-  # "ReverseTrendMACDSignalWindow": {
-  #   "description": "ReverseTrendMACDSignalWindow",
-  #   "label": "ReverseTrendMACDSignalWindow",
-  #     "value": 9
-  # },
-  # "ReverseTrendBullishThresholdPct": {
-  #   "description": "ReverseTrendBullishThresholdPct",
-  #   "label": "ReverseTrendBullishThresholdPct",
-  #     "value": 0.7
-  # },
-  #   "ReverseTrendBullishPartialThresholdPct": {
-  #   "description": "ReverseTrendBullishPartialThresholdPct",
-  #   "label": "ReverseTrendBullishPartialThresholdPct",
-  #       "value": 0.75
-  #   },
-  #   "ReverseTrendBearishThresholdPct": {
-  #   "description": "ReverseTrendBearishThresholdPct",
-  #   "label": "ReverseTrendBearishThresholdPct",
-  #       "value": 0.7
-  #   },
-    # "ReverseTrendBearishPartialThresholdPct": {
-    # "description": "ReverseTrendBearishPartialThresholdPct",
-    # "label": "ReverseTrendBearishPartialThresholdPct",
-    #     "value": 0.75,
-    #     "increment": 0.05
-    # },
-    # "ReverseTrendCandleDivisor": {
-    #   "description": "ReverseTrendCandleDivisor",
-    #   "label": "ReverseTrendCandleDivisor",
-    #     "value": 3.0
-    # },
-    # "ReverseTrendLastTrendEntries": {
-    # "description": "ReverseTrendLastTrendEntries",
-    # "label": "ReverseTrendLastTrendEntries",
-    #     "value": 3
-    # },
+  "ReverseTrendMACDShortWindow": {
+    "description": "ReverseTrendMACDShortWindow",
+    "label": "ReverseTrendMACDShortWindow",
+    "value": 6
+  },
+  "ReverseTrendMACDLongWindow": {
+    "description": "ReverseTrendMACDLongWindow",
+    "label": "ReverseTrendMACDLongWindow",
+      "value": 26
+  },
+  "ReverseTrendMACDSignalWindow": {
+    "description": "ReverseTrendMACDSignalWindow",
+    "label": "ReverseTrendMACDSignalWindow",
+      "value": 9
+  },
+  "ReverseTrendBullishThresholdPct": {
+    "description": "ReverseTrendBullishThresholdPct",
+    "label": "ReverseTrendBullishThresholdPct",
+      "value": 0.7
+  },
+    "ReverseTrendBullishPartialThresholdPct": {
+    "description": "ReverseTrendBullishPartialThresholdPct",
+    "label": "ReverseTrendBullishPartialThresholdPct",
+        "value": 0.75
+    },
+    "ReverseTrendBearishThresholdPct": {
+    "description": "ReverseTrendBearishThresholdPct",
+    "label": "ReverseTrendBearishThresholdPct",
+        "value": 0.7
+    },
+    "ReverseTrendBearishPartialThresholdPct": {
+    "description": "ReverseTrendBearishPartialThresholdPct",
+    "label": "ReverseTrendBearishPartialThresholdPct",
+        "value": 0.75,
+        "increment": 0.05
+    },
+    "ReverseTrendCandleDivisor": {
+      "description": "ReverseTrendCandleDivisor",
+      "label": "ReverseTrendCandleDivisor",
+        "value": 3.0
+    },
+    "ReverseTrendLastTrendEntries": {
+    "description": "ReverseTrendLastTrendEntries",
+    "label": "ReverseTrendLastTrendEntries",
+        "value": 3
+    },
   "MaxReverseAttempts": { 
     "description": "Reverse (sell and buy reverse direction) when stoploss reached or reverse conditions are met (linear decreasing current profit)",
     "label": "6. MaxReverseAttempts",
@@ -214,10 +214,10 @@ DEFAULT_CONFIG ={
     "description": "Banned minutes after too many reverses",
     "label": "7. BannedMinutes",
     "value": 30
-  }
-    # "ReverseTrendBanSeconds": {
-    #     "description": "Ban pair for n seconds after max reverse attempts reached",
-    #     "label": "Max reverse ban time (seconds)",
-    #     "value": 60*20
-    # },
+  },
+    "ReverseTrendBanSeconds": {
+        "description": "Ban pair for n seconds after max reverse attempts reached",
+        "label": "Max reverse ban time (seconds)",
+        "value": 60*20
+    }
 } 
