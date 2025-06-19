@@ -9,13 +9,43 @@ class configType(str, Enum):
 DEFAULT_CONFIG ={
   "TradeAgeInMinutes": {
     "description": "Past Minutes of last trade to check if made profit, if yes continue with same direction, if no reverse trade",
-    "label": "0. TradeAgeInMinutes (Default Stoploss) basis for ROI as well",
+    "label": "0. TradeAgeInMinutes",
     "value": 20
   },  
   "StoplossWinrateNeutral": {
     "description": "Stoploss used in custom_exit to exit trade, custom_stoploss in strategy returns always -0.99",
-    "label": "1. StoplossWinrateNeutral (Default Stoploss), also ROI=Stoploss+0.005",
+    "label": "1. StoplossWinrateNeutral (Default Stoploss), also ROI=Stoploss+0.02",
     "value": -0.12
+  },
+  "DefaultStake": {
+    "description": "Used to return custom_stake_amout to freqtrade to fullfill trades",
+    "label": "2. DefaultStake",
+    "value": 200
+  },
+  "StakeIncrementStep": {
+    "description": "Used to adjust stake amount according to winrate or lost trade",
+    "label": "3. StakeIncrementStep",
+    "value": 50
+  },
+  "Leverage": {
+    "description": "High Risk, factor to multipy DefautlStake with to increase stake amount, risk of loosing everything",
+    "label": "4. Leverage",
+    "value": 3
+  },
+  "MinutesPassedForReverseLogic": {
+    "description": "Check reversing trade after n minutes",
+    "label": "5. MinutesPassedForReverseLogic",
+    "value": 60
+  },
+  "MaxReverseAttempts": { 
+    "description": "Reverse (sell and buy reverse direction) when stoploss reached or reverse conditions are met (linear decreasing current profit)",
+    "label": "6. MaxReverseAttempts",
+    "value": 3
+  },
+  "BannedMinutes": { 
+    "description": "Banned minutes after too many reverses",
+    "label": "7. BannedMinutes",
+    "value": 30
   },  
   "GreedAndFearLimit": {
     "description": "No of entries to fetch from the API for Greed and Fear",
@@ -129,21 +159,6 @@ DEFAULT_CONFIG ={
     "label": "MinStake",
     "value": 100
   },
-  "DefaultStake": {
-    "description": "Used to return custom_stake_amout to freqtrade to fullfill trades",
-    "label": "2. DefaultStake",
-    "value": 200
-  },
-  "StakeIncrementStep": {
-    "description": "Used to adjust stake amount according to winrate or lost trade",
-    "label": "3. StakeIncrementStep",
-    "value": 50
-  },
-  "Leverage": {
-    "description": "High Risk, factor to multipy DefautlStake with to increase stake amount, risk of loosing everything",
-    "label": "4. Leverage",
-    "value": 3
-  },
   "BiasSymbols": {
     "description": "Show sentiment for these symbols at the bottom",
     "label": "BiasSymbols",
@@ -158,11 +173,6 @@ DEFAULT_CONFIG ={
     "description": "CheckProfitSeconds",
     "label": "CheckProfitSeconds",
     "value": 5
-  },
-  "MinutesPassedForReverseLogic": {
-    "description": "Check reversing trade after n minutes",
-    "label": "5. MinutesPassedForReverseLogic",
-    "value": 60
   },
   "ReverseTrendMACDShortWindow": {
     "description": "ReverseTrendMACDShortWindow",
@@ -210,16 +220,6 @@ DEFAULT_CONFIG ={
     "label": "ReverseTrendLastTrendEntries",
         "value": 3
     },
-  "MaxReverseAttempts": { 
-    "description": "Reverse (sell and buy reverse direction) when stoploss reached or reverse conditions are met (linear decreasing current profit)",
-    "label": "6. MaxReverseAttempts",
-    "value": 3
-  },
-  "BannedMinutes": { 
-    "description": "Banned minutes after too many reverses",
-    "label": "7. BannedMinutes",
-    "value": 30
-  },
     "ReverseTrendBanSeconds": {
         "description": "Ban pair for n seconds after max reverse attempts reached",
         "label": "Max reverse ban time (seconds)",
