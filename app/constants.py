@@ -54,7 +54,7 @@ DEFAULT_CONFIG ={
   },
   "Stoploss Offset": { 
     "description": "Will increase stoploss towards 0, in case of winrate high get out earlier. In Case of winrate low, decrease stoploss to allow more losses",
-    "label": "8. Stoploss Offset",
+    "label": "9. Stoploss Offset",
     "value": 0.005
   },  
   "GreedAndFearLimit": {
