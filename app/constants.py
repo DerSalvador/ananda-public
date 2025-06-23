@@ -46,6 +46,16 @@ DEFAULT_CONFIG ={
     "description": "Banned minutes after too many reverses",
     "label": "7. BannedMinutes",
     "value": 30
+  },
+  "Roi Offset": { 
+    "description": "Will be added to the stoploss as resulting ROI, so if stoploss is -0.12 and roi_offset 0.02 will be added, ROI will be 0.14 in case of winrate high. In Case of winrate low, stoploss will be -0.1 to realite profit earlier",
+    "label": "8. ROI Offset (based on stoploss and winrate)",
+    "value": 0.01
+  },
+  "Stoploss Offset": { 
+    "description": "Will increase stoploss towards 0, in case of winrate high get out earlier. In Case of winrate low, decrease stoploss to allow more losses",
+    "label": "8. Stoploss Offset",
+    "value": 0.005
   },  
   "GreedAndFearLimit": {
     "description": "No of entries to fetch from the API for Greed and Fear",
