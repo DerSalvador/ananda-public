@@ -59,7 +59,7 @@ DEFAULT_CONFIG ={
   },
   "ReturnOnInvest": {
     "description": "Initial ROI for custom_exit",
-    "label": "ReturnOnInvest",
+    "label": "90. ReturnOnInvest",
     "value": 0.7
   },  
   "GreedAndFearLimit": {
