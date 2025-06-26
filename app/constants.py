@@ -15,7 +15,7 @@ DEFAULT_CONFIG ={
   "StoplossWinrateNeutral": {
     "description": "Stoploss used in custom_exit to exit trade, custom_stoploss in strategy returns always -0.99",
     "label": "1. StoplossWinrateNeutral (Default Stoploss), also ROI=Stoploss+0.02",
-    "value": -0.12
+    "value": -0.5
   },
   "DefaultStake": {
     "description": "Used to return custom_stake_amout to freqtrade to fullfill trades",
@@ -56,6 +56,11 @@ DEFAULT_CONFIG ={
     "description": "Will increase stoploss towards 0, in case of winrate high get out earlier. In Case of winrate low, decrease stoploss to allow more losses",
     "label": "9. Stoploss Offset (adapt stoploss according to winrate)",
     "value": 0.005
+  },
+  "ReturnOnInvest": {
+    "description": "Initial ROI for custom_exit",
+    "label": "ReturnOnInvest",
+    "value": 0.7
   },  
   "GreedAndFearLimit": {
     "description": "No of entries to fetch from the API for Greed and Fear",
