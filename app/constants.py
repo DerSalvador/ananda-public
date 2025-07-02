@@ -57,6 +57,11 @@ DEFAULT_CONFIG ={
     "label": "9. Stoploss Offset (adapt stoploss according to winrate)",
     "value": 0.005
   },
+  "StoplossFromConfig": {
+    "description": "Initial ROI for custom_exit",
+    "label": "91. StoplossFromConfig",
+    "value": "true"
+  },
   "ReturnOnInvest": {
     "description": "Initial ROI for custom_exit",
     "label": "90. ReturnOnInvest",
