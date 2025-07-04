@@ -59,12 +59,12 @@ DEFAULT_CONFIG ={
   },
   "ROIFromConfig": {
     "description": "Initial ROI for custom_exit",
-    "label": "91. StoplossFromConfig",
+    "label": "91. ROIFromConfig",
     "value": "true"
   },
   "StoplossFromConfig": {
     "description": "Initial ROI for custom_exit",
-    "label": "91. StoplossFromConfig",
+    "label": "92. StoplossFromConfig",
     "value": "true"
   },
   "ReturnOnInvest": {
